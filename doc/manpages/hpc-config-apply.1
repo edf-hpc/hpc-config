@@ -1,0 +1,124 @@
+.TH "hpc\-config\-apply (1)" "" "" "" ""
+.SH NAME
+.PP
+hpc\-config\-apply \- download and apply a puppet\-hpc configuration
+.SH SYNOPSIS
+.IP
+.nf
+\f[C]
+\ \ \ hpc\-config\-apply\ [\-h]\ [\-\-dry\-run]\ [\-\-keep]\ [\-\-no\-kernel\-args]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ [\-\-profile]\ [\-\-config\ [CONFIG_FILE]]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ [\-\-source\ [SOURCE]]\ [\-\-environment\ [ENVIRONMENT]]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ [\-\-tmpdir\ [TMPDIR]]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ [\-\-deploy\-step\ [{production,usbdisk}]]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ [\-\-keys\-source\ [KEYS_SOURCE]]\ [\-\-tags\ [TAGS]]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ [\-\-verbose]
+\f[]
+.fi
+.SH DESCRIPTION
+.PP
+hpc\-config\-apply downloads a Puppet configuration and all the related
+files via HTTP and applies this configuration on a cluster node.
+.SH OPTIONS
+.IP
+.nf
+\f[C]
+\-h,\ \-\-help\ \ \ \ \ \ \ \ \ \ \ \ show\ this\ help\ message\ and\ exit
+\-\-dry\-run\ \ \ \ \ \ \ \ \ \ \ \ \ Don\[aq]t\ actually\ perform\ configuration\ (still\ downloads
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ env).
+\-\-keep,\ \-K\ \ \ \ \ \ \ \ \ \ \ \ Keep\ local\ data\ at\ the\ end\ of\ the\ run.
+\-\-no\-kernel\-args,\ \-N\ \ Disable\ parsing\ of\ kernel\ cmdline\ arguments.
+\-\-profile\ \ \ \ \ \ \ \ \ \ \ \ \ Profile\ the\ puppet\ run.
+\-\-config\ [CONFIG_FILE],\ \-c\ [CONFIG_FILE]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Configuration\ file
+\-\-source\ [SOURCE],\ \-s\ [SOURCE]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Configuration\ source\ URL
+\-\-environment\ [ENVIRONMENT],\ \-e\ [ENVIRONMENT]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Environment\ name
+\-\-tmpdir\ [TMPDIR],\ \-t\ [TMPDIR]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Change\ TMPDIR\ env\ for\ puppet\ run.
+\-\-deploy\-step\ [{production,usbdisk}],\ \-d\ [{production,usbdisk}]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Deploy\ step
+\-\-keys\-source\ [KEYS_SOURCE],\ \-k\ [KEYS_SOURCE]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Secret\ keys\ source
+\-\-tags\ [TAGS]\ \ \ \ \ \ \ \ \ Puppet\ tags\ (comma\ separated\ list)
+\-\-verbose,\ \-v\ \ \ \ \ \ \ \ \ More\ output,\ can\ be\ specified\ multiple\ times.
+\f[]
+.fi
+.SH PARAMETERS
+.PP
+\f[C]hpc\-config\-apply\f[] has six configuration sources considered in
+this order: * Command line arguments * Kernel command line *
+Configuration file environment section * Configuration file DEFAULT
+section * Environment file (for \f[C]tmpdir\f[]) * Application default
+.PP
+The kernel command line parameters can be specified with the syntax:
+\f[C]hpc_conf.environment=test\f[].
+Boolean can be specified without the \[aq]\f[C]=\f[]\[aq] character to
+mean True or more directly \f[C]hpc_conf.keep=True\f[].
+Kernel command line is read from the file \f[C]/proc/cmdline\f[].
+It can be used to load an alternate environment on a diskless node.
+.PP
+If kernel command line parameters should be ignored for a particular
+run, the command line option \f[C]\-\-no\-kernel\-args\f[] can be used.
+.PP
+The supported parameters and there defaults are: * dry_run (boolean):
+False * keep (boolean): False * no_kernel_args (boolean): False *
+profile (boolean): False * config (string):
+\f[C]\[aq]/etc/hpc\-config.conf\[aq]\f[] * source (string): None *
+environment (string): \f[C]\[aq]production\[aq]\f[] * tmpdir (string):
+TMPDIR environment variable * deploy_step (string):
+\f[C]\[aq]production\[aq]\f[] * keys_source (string): None * tags
+(string): None * verbosity (int): 0
+.SH CONFIGURATION FILE
+.PP
+The default configuration file is installed at
+\f[C]/etc/hpc\-config.conf\f[] and it is a simple text file using the
+INI file format (http://en.wikipedia.org/wiki/INI_file).
+This file has a basic structure composed of sections, properties, and
+values.
+The lines starting with a semi\-colon are commentaries and they\[aq]re
+ignored.
+Each section describes an environment, the \[aq][DEFAULT]\[aq] section
+is used when no environment is specified via the \[aq]\-e\[aq] option.
+In each section, each option of the command line can be defined (except
+config file).
+Here is an example of a typical file with only a \[aq][DEFAULT]\[aq]
+section:
+.IP
+.nf
+\f[C]
+[DEFAULT]
+environment=production
+source=http://masternode/hpc\-config
+keys_source=http://masternode/secret
+\f[]
+.fi
+.SH DATA PROTECTION
+.PP
+The Puppet environment data is removed after the run by default.
+The \f[C]\-\-keep\f[] option can be used to preserve those data on the
+node after the run.
+.PP
+The permissions of directories containing sensitive data (keys and
+Puppet environment are modified to make them only readable by root.
+.SH EXAMPLES
+.PP
+To simply apply the default puppet environment:
+.IP
+.nf
+\f[C]
+hpc\-config\-apply
+\f[]
+.fi
+.PP
+To apply the \[aq]test\[aq] environment in verbose mode:
+.IP
+.nf
+\f[C]
+hpc\-config\-apply\ \-v\ \-e\ test
+\f[]
+.fi
+.SH SEE ALSO
+.PP
+hpc\-config\-push(1)
