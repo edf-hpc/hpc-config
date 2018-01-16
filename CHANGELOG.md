@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+- h-c-push: S3: Not removing remote files but update
+
 ## [1.1.5] - 2017-10-05
 
 ### Changed

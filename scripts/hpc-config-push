@@ -42,6 +42,7 @@ import stat
 import socket
 import warnings
 import time
+import hashlib
 from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import Pool
 
@@ -435,11 +436,37 @@ def _get_full_paths(source_path, destination_path, file_path):
     return source_file_path, dest_file_path
 
 
-def _s3_upload_file(source_file_path, bucket, destination_file_path):
+def _s3_upload_file(source_file_path,
+                    bucket,
+                    destination_file_path,
+                    object_md5s=None):
     #max size in bytes before uploading in parts. between 1 and 5 GB recommended
     max_size = 20 * 1000 * 1000
     #size of parts when uploading in parts
     part_size = 6 * 1000 * 1000
+
+    if object_md5s is None:
+        oject_md5s = {}
+
+    # Check if the file has changed
+    if destination_file_path in object_md5s.keys():
+        remote_md5 = object_md5s[destination_file_path]
+    else:
+        remote_key = bucket.get_key(destination_file_path)
+        if remote_key is not None:
+            remote_md5 = remote_key.etag[1:-1]
+        else:
+            remote_md5 = None
+    local_md5 = hashlib.md5(open(source_file_path, 'rb').read()).hexdigest()
+    if remote_md5 == local_md5:
+        logger.debug("S3 upload: MD5 Match for file %s", source_file_path)
+        return
+    else:
+        logger.debug("S3 upload: MD5 Mismatch for file %s (%s != %s)",
+                     source_file_path,
+                     remote_md5,
+                     local_md5)
+
 
     # Determine upload method
     filesize = os.path.getsize(source_file_path)
@@ -465,13 +492,21 @@ def _s3_upload_file(source_file_path, bucket, destination_file_path):
                      bytes_written, filesize, source_file_path)
 
 
-def _s3_upload(source_path, bucket, destination_path, clean=True):
+def _s3_upload(source_path,
+               bucket,
+               destination_path,
+               clean=True,
+               object_md5s=None):
     upload_file_paths = _list_upload_file_paths(source_path)
 
+    if object_md5s is None:
+        object_md5s = {}
     pool = ThreadPool()
     results = {}
 
     dirs = []
+    touched_objects = []
+
 
     # Upload the files
     for file_path in upload_file_paths:
@@ -480,22 +515,22 @@ def _s3_upload(source_path, bucket, destination_path, clean=True):
 
         # Create remote directory if necessary
         dest_dir_name = os.path.dirname(dest_file_path) + "/"
-        dest_dir = None
-        if dest_dir_name not in dirs:
-            dest_dir = bucket.get_key(dest_dir_name)
-        while dest_dir_name not in dirs and dest_dir is None :
+        while dest_dir_name not in dirs \
+                and dest_dir_name not in object_md5s.keys() \
+                and bucket.get_key(dest_dir_name) is None:
             logger.debug("S3 upload: Creating directory %s", dest_dir_name)
             dest_dir = bucket.new_key(dest_dir_name)
             dest_dir.set_contents_from_string('', policy='public-read')
             dirs.append(dest_dir_name)
-            # Lookup parent
+            touched_objects.append(dest_dir_name)
+            # Continue with parent
             dest_dir_name = os.path.dirname(dest_dir_name[:-1]) + "/"
-            dest_dir = bucket.get_key(dest_dir_name)
 
         results[dest_file_path] = pool.apply_async(
             _s3_upload_file,
-            [source_file_path, bucket, dest_file_path]
+            [source_file_path, bucket, dest_file_path, object_md5s]
         )
+        touched_objects.append(dest_file_path)
 
     pool.close()
     finished = 0
@@ -509,6 +544,40 @@ def _s3_upload(source_path, bucket, destination_path, clean=True):
     for dest_file_path, result in results.items():
         result.get()
     pool.join()
+    return touched_objects
+
+def _s3_list_md5(bucket, prefix):
+    keys = bucket.list(prefix=prefix)
+    md5s = {}
+    for key in keys:
+        md5s[key.name] = key.etag[1:-1]
+    return md5s
+
+def _s3_remove_old_objects(bucket, old_object_md5s, new_objects):
+    """
+        Remove all objects from the old list not in the new list.
+    """
+    key_names = []
+    for object_name in old_object_md5s.keys():
+        if object_name not in new_objects:
+            if not object_name.endswith("/"):
+                logger.debug("S3 push: Removing old file: %s", object_name)
+                key_names.append(object_name)
+                continue
+            empty=True
+            for file_name in new_objects:
+                if file_name.startswith(object_name):
+                    empty=False
+            if empty:
+                logger.debug("S3 push: Removing old dir: %s", object_name)
+                key_names.append(object_name)
+    logger.info("S3 push: %d files to remove.", len(key_names))
+    result = bucket.delete_keys(key_names)
+    error_count = len(result.errors)
+    deleted_count = len(result.deleted)
+    logger.debug("S3 push: %d deleted, %s errors", deleted_count, error_count)
+    if error_count > 0:
+        logger.error("S3 push: Failed to delete %d old keys", error_count)
 
 def _s3_rmrf(bucket, prefix):
     keys = bucket.list(prefix=prefix)
@@ -552,22 +621,32 @@ def _push_s3():
     bucket = conn.get_bucket(conf.s3_bucket_name)
     bucket.set_acl('public-read')
 
-    logger.info("S3 push: Cleaning destination %s", conf.destination)
-    _s3_rmrf(bucket, conf.destination)
+    logger.info("S3 push: get remote objects list")
+    obj_md5s = _s3_list_md5(bucket, conf.destination)
+
+    touched_objects = []
 
     logger.info("S3 push: copying tarball")
-    _s3_upload(conf.archive, bucket, conf.destination)
+    lst = _s3_upload(conf.archive, bucket, conf.destination, object_md5s=obj_md5s)
+    touched_objects = list(set(touched_objects + lst))
+
 
     logger.info("S3 push: copying private files")
     dir_files = os.path.join(conf.destination, 'files')
-    _s3_upload(conf.dir_files_private, bucket, dir_files)
+    lst = _s3_upload(conf.dir_files_private, bucket, dir_files, object_md5s=obj_md5s)
+    touched_objects = list(set(touched_objects + lst))
     logger.info("S3 push: copying puppet conf")
-    _s3_upload(conf.conf_puppet, bucket, conf.destination)
+    lst = _s3_upload(conf.conf_puppet, bucket, conf.destination, object_md5s=obj_md5s)
+    touched_objects = list(set(touched_objects + lst))
     logger.info("S3 push: copying hiera conf")
-    _s3_upload(conf.conf_hiera, bucket, conf.destination)
+    lst = _s3_upload(conf.conf_hiera, bucket, conf.destination, object_md5s=obj_md5s)
+    touched_objects = list(set(touched_objects + lst))
     logger.info("S3 push: copying private facts")
-    _s3_upload(conf.facts_private, bucket, conf.destination)
+    lst = _s3_upload(conf.facts_private, bucket, conf.destination, object_md5s=obj_md5s)
+    touched_objects = list(set(touched_objects + lst))
 
+    logger.info("S3 push: Removing old files")
+    _s3_remove_old_objects(bucket, obj_md5s, touched_objects)
 
 def _sftp_is_dir(sftp_client, path):
     if sftp_client not in _sftp_host_directories.keys():
