@@ -539,7 +539,7 @@ def _s3_upload(source_path,
         for result in results.values():
             if result.ready():
                 finished += 1
-        logger.info("SFTP push: Transfered files %d/%d", finished, len(results))
+        logger.info("S3 push: Transfered files %d/%d", finished, len(results))
         time.sleep(1)
     for dest_file_path, result in results.items():
         result.get()
