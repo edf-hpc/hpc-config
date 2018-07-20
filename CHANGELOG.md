@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.1.7] - 2018-07-20
+
+### Changed
+- h-c-apply: be verbose by default when stdout is TTY
+
 ## [1.1.6] - 2018-01-16
 
 ### Changed
