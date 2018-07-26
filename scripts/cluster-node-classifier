@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2018 EDF SA
+# Contact:
+#       CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
+#       1, Avenue du General de Gaulle
+#       92140 Clamart
+#
+# Authors: CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
+#
+# This file is part of hpc-config.
+#
+# puppet-hpc is free software: you can redistribute in and/or
+# modify it under the terms of the GNU General Public License,
+# version 2, as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with puppet-hpc. If not, see
+# <http://www.gnu.org/licenses/>.
+
+from __future__ import print_function
+import sys
+import re
+import yaml
+
+CONF='/etc/hpc-config/cluster-nodes.yaml'
+
+
+def load_conf():
+
+    conf = None
+    try:
+        with open(CONF, 'r') as fh_c:
+            conf = yaml.load(fh_c)
+    except FileNotFoundError:
+        print('unable to open file',
+              CONF, file=sys.stderr)
+        sys.exit(1)
+        
+
+    return conf
+
+
+def get_noderole(prefix, nodename):
+
+    noderole_re_s = r"%s([a-zA-Z]+)\d+" % (prefix)
+    match = re.search(noderole_re_s, nodename)
+    if match is None:
+        print('unable to extract role name from hostname',
+              nodename, file=sys.stderr)
+        sys.exit(1)
+    return match.group(1)
+
+
+def get_nodearea(areas, role):
+
+    for area, roles in areas.items():
+        if role in roles:
+            return area
+
+    print('unable to find area for role',
+          role, file=sys.stderr)
+    sys.exit(1)
+
+
+def main():
+
+    nodename = sys.argv[1]
+
+    conf = load_conf()
+
+    site = {'parameters': {}}
+
+    # cluster_name is mandatory
+    if not 'cluster_name' in conf:
+        print("parameter cluster_name not found in %s",
+              CONF, file=sys.stderr)
+        sys.exit(1)
+    site['parameters']['cluster_name'] = conf['cluster_name']
+
+    # cluster_prefix is optional
+    if 'cluster_prefix' in conf:
+        site['parameters']['cluster_prefix'] = conf['cluster_prefix']
+
+        # areas are optional but require prefix
+        if 'areas' in conf:
+            # extract node role from nodename
+            role = get_noderole(conf['cluster_prefix'], nodename)
+            site['parameters']['area'] = get_nodearea(conf['areas'], role)
+
+    print(yaml.dump(site))
+
+
+if __name__ == '__main__':
+    main()

@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Introduce new script cluster-node-classifier designed to be used as ENC
+
 ## [1.1.7] - 2018-07-20
 
 ### Changed
