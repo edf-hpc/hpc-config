@@ -101,7 +101,7 @@ class AppConf():
         # This one is hard-coded, there is no configuration parameter to
         # change it since it would be irrelevant to change it.
         self.conf_environment = 'environment.conf'
-        self.facts_private = None
+        self.nodes_private = None
         self.dir_modules_generic = None
         self.dir_modules_private = None
         self.dir_manifests_generic = None
@@ -127,7 +127,7 @@ class AppConf():
         logger.debug("- dir_tmp: %s", str(self.dir_tmp))
         logger.debug("- conf_puppet: %s", str(self.conf_puppet))
         logger.debug("- conf_hiera: %s", str(self.conf_hiera))
-        logger.debug("- facts_private: %s", str(self.facts_private))
+        logger.debug("- nodes_private: %s", str(self.nodes_private))
         logger.debug("- dir_modules_generic: %s", str(self.dir_modules_generic))
         logger.debug("- dir_modules_private: %s", str(self.dir_modules_private))
         logger.debug("- dir_manifests_generic: %s", str(self.dir_manifests_generic))
@@ -191,7 +191,7 @@ def parse_conf():
       "privatedata = hpc-privatedata\n"
       "puppet_conf = ${privatedata}/puppet-config/${global:cluster}/puppet.conf\n"
       "hiera_conf = ${privatedata}/puppet-config/${global:cluster}/hiera.yaml\n"
-      "facts_private = ${privatedata}/puppet-config/${global:cluster}/hpc-config-facts.yaml\n"
+      "nodes_private = ${privatedata}/puppet-config/${global:cluster}/cluster-nodes.yaml\n"
       "modules_generic = ${puppethpc}/puppet-config/cluster,${puppethpc}/puppet-config/modules,/usr/share/puppet/modules\n"
       "modules_private = ${privatedata}/puppet-config/${global:cluster}/modules\n"
       "manifests_generic = ${puppethpc}/puppet-config/manifests\n"
@@ -211,7 +211,9 @@ def parse_conf():
     conf.dir_tmp = parser.get('paths', 'tmp')
     conf.conf_puppet = parser.get('paths', 'puppet_conf')
     conf.conf_hiera = parser.get('paths', 'hiera_conf')
-    conf.facts_private = parser.get('paths', 'facts_private')
+    if parser.has_option('paths', 'facts_private'):
+        logger.warning('configuration facts_private is deprecated, use nodes_private')
+    conf.nodes_private = parser.get('paths', 'nodes_private')
     conf.dir_modules_generic = parser.get('paths', 'modules_generic').split(',')
     conf.dir_modules_private = parser.get('paths', 'modules_private')
     conf.dir_manifests_generic = parser.get('paths', 'manifests_generic')
@@ -398,8 +400,8 @@ def _push_posix():
     shutil.copy(conf.conf_puppet, conf.destination)
     logger.debug("posix push: copying hiera conf")
     shutil.copy(conf.conf_hiera, conf.destination)
-    logger.debug("posix push: copying private facts")
-    shutil.copy(conf.facts_private, conf.destination)
+    logger.debug("posix push: copying private cluster nodes description")
+    shutil.copy(conf.nodes_private, conf.destination)
 
     # Set permissions
     for root, dirs, files in os.walk(conf.destination):
@@ -641,8 +643,8 @@ def _push_s3():
     logger.info("S3 push: copying hiera conf")
     lst = _s3_upload(conf.conf_hiera, bucket, conf.destination, object_md5s=obj_md5s)
     touched_objects = list(set(touched_objects + lst))
-    logger.info("S3 push: copying private facts")
-    lst = _s3_upload(conf.facts_private, bucket, conf.destination, object_md5s=obj_md5s)
+    logger.info("S3 push: copying private cluster nodes description")
+    lst = _s3_upload(conf.nodes_private, bucket, conf.destination, object_md5s=obj_md5s)
     touched_objects = list(set(touched_objects + lst))
 
     logger.info("S3 push: Removing old files")
@@ -752,8 +754,8 @@ def _sftp_push_host(host, conf):
     _sftp_upload(conf.conf_puppet, sftp_client, conf.destination)
     logger.debug("SFTP push: copying hiera conf")
     _sftp_upload(conf.conf_hiera, sftp_client, conf.destination)
-    logger.debug("SFTP push: copying private facts")
-    _sftp_upload(conf.facts_private, sftp_client, conf.destination)
+    logger.debug("SFTP push: copying private cluster nodes description")
+    _sftp_upload(conf.nodes_private, sftp_client, conf.destination)
 
 
 def _push_sftp():

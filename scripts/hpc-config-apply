@@ -67,8 +67,8 @@ KEYS_BASE_MODE = 0o700
 HIERA_CONF_ARCHIVE_NAME = 'hiera.yaml'
 HIERA_CONF_PATH = '/etc/puppet/hiera.yaml'
 
-FACTS_CONF_ARCHIVE_NAME = 'hpc-config-facts.yaml'
-FACTS_CONF_PATH = '/var/lib/puppet/facts.d/hpc-config-facts.yaml'
+NODES_YAML_ARCHIVE_NAME = 'cluster-nodes.yaml'
+NODES_YAML_PATH = '/etc/hpc-config/cluster-nodes.yaml'
 
 PUPPET_CONF_ARCHIVE_NAME = 'puppet.conf'
 PUPPET_CONF_PATH = '/etc/puppet/puppet.conf'
@@ -403,24 +403,22 @@ def get_hiera_conf(source, environment, version='latest'):
     return
 
 
-def get_facts_conf(source, environment, version='latest'):
+def get_nodes_yaml(source, environment, version='latest'):
     if source is None:
-        logging.info("Source is undefined. Skipping retrieval of Facts.")
+        logging.info("Source is undefined. Skipping retrieval of %s.",
+                     NODES_YAML_ARCHIVE_NAME)
         return
-    facts_conf_url = '/'.join([
+    nodes_yaml_url = '/'.join([
         source.rstrip('/'),
         environment,
         version,
-        FACTS_CONF_ARCHIVE_NAME
+        NODES_YAML_ARCHIVE_NAME
     ])
-    parent_dir = os.path.dirname(FACTS_CONF_PATH)
-    if not os.path.isdir(parent_dir):
-        logging.debug("Creating parent directory %s", parent_dir)
-        os.makedirs(parent_dir, 0o755)
-    logging.info("Getting Facts config from %s", facts_conf_url)
-    if os.path.exists(FACTS_CONF_PATH):
-        os.remove(FACTS_CONF_PATH)
-    get_url(facts_conf_url, FACTS_CONF_PATH)
+    parent_dir = os.path.dirname(NODES_YAML_PATH)
+    logging.info("Getting cluster nodes config from %s", nodes_yaml_url)
+    if os.path.exists(NODES_YAML_PATH):
+        os.remove(NODES_YAML_PATH)
+    get_url(nodes_yaml_url, NODES_YAML_PATH)
     return
 
 
@@ -571,7 +569,7 @@ if __name__ == "__main__":
 
     get_hiera_conf(source, environment)
 
-    get_facts_conf(source, environment)
+    get_nodes_yaml(source, environment)
 
     get_puppet_conf(source, environment)
 

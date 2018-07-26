@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+- h-c-{push,apply}: propagate cluster-node-classifier ENC script input file
+  instead of external fact YAML file
+
 ### Added
 - Introduce new script cluster-node-classifier designed to be used as ENC
 
