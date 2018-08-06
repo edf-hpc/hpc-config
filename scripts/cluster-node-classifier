@@ -49,7 +49,7 @@ def load_conf():
 
 def get_noderole(prefix, nodename):
 
-    noderole_re_s = r"%s([a-zA-Z]+)\d+" % (prefix)
+    noderole_re_s = r"%s([a-z0-9]*[a-z]+)\d+" % (prefix)
     match = re.search(noderole_re_s, nodename)
     if match is None:
         print('unable to extract role name from hostname',
