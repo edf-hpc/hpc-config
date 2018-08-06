@@ -77,22 +77,23 @@ def main():
 
     site = {'parameters': {}}
 
-    # cluster_name is mandatory
-    if not 'cluster_name' in conf:
-        print("parameter cluster_name not found in %s",
-              CONF, file=sys.stderr)
-        sys.exit(1)
+    # cluster_name and cluster_prefix are mandatory
+    for key in ['cluster_name', 'cluster_prefix']:
+        if not key in conf:
+            print("parameter %s not found in %s",
+                  key, CONF, file=sys.stderr)
+            sys.exit(1)
+
     site['parameters']['cluster_name'] = conf['cluster_name']
+    site['parameters']['cluster_prefix'] = conf['cluster_prefix']
 
-    # cluster_prefix is optional
-    if 'cluster_prefix' in conf:
-        site['parameters']['cluster_prefix'] = conf['cluster_prefix']
+    # extract node role from nodename
+    role = get_noderole(conf['cluster_prefix'], nodename)
+    site['parameters']['puppet_role'] = role
 
-        # areas are optional but require prefix
-        if 'areas' in conf:
-            # extract node role from nodename
-            role = get_noderole(conf['cluster_prefix'], nodename)
-            site['parameters']['area'] = get_nodearea(conf['areas'], role)
+    # areas are optional but require prefix
+    if 'areas' in conf:
+        site['parameters']['area'] = get_nodearea(conf['areas'], role)
 
     print(yaml.dump(site))
 
