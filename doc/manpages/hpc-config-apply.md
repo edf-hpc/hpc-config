@@ -9,7 +9,7 @@ hpc-config-apply - download and apply a puppet-hpc configuration
        hpc-config-apply [-h] [--dry-run] [--keep] [--no-kernel-args]
                         [--profile] [--config [CONFIG_FILE]]
                         [--source [SOURCE]] [--environment [ENVIRONMENT]]
-                        [--tmpdir [TMPDIR]]
+                        [--area [AREA]] [--tmpdir [TMPDIR]]
                         [--deploy-step [{production,usbdisk}]]
                         [--keys-source [KEYS_SOURCE]] [--tags [TAGS]]
                         [--verbose]
@@ -33,6 +33,8 @@ files via HTTP and applies this configuration on a cluster node.
                           Configuration source URL
     --environment [ENVIRONMENT], -e [ENVIRONMENT]
                           Environment name
+    --area [AREA], -a [AREA]
+                          Area name
     --tmpdir [TMPDIR], -t [TMPDIR]
                           Change TMPDIR env for puppet run.
     --deploy-step [{production,usbdisk}], -d [{production,usbdisk}]
@@ -91,6 +93,7 @@ Here is an example of a typical file with only a '[DEFAULT]' section:
 
     [DEFAULT]
     environment=production
+    area=default
     source=http://masternode/hpc-config
     keys_source=http://masternode/secret
 

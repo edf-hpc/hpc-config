@@ -44,23 +44,76 @@ The layout of this directory should be like in the example below:
 .nf
 \f[C]
 some_directory/
-├──\ private\-data
-│\ \ \ ├──\ files
-│\ \ \ └──\ hieradata
-└──\ puppet\-hpc
+├──\ private\-data/
+│\ \ \ ├──\ files/
+│\ \ \ │\ \ \ └──\ $CLUSTER/
+│\ \ \ │\ \ \ \ \ \ \ ├──\ cluster/
+│\ \ \ │\ \ \ \ \ \ \ └──\ $AREA/
+│\ \ \ └──\ hieradata/
+│\ \ \ \ \ \ \ ├──\ *.yaml
+│\ \ \ \ \ \ \ └──\ $CLUSTER/
+│\ \ \ \ \ \ \ \ \ \ \ ├──\ *.yaml
+│\ \ \ \ \ \ \ \ \ \ \ ├──\ roles/
+│\ \ \ \ \ \ \ \ \ \ \ │\ \ \ └──\ *.yaml
+│\ \ \ \ \ \ \ \ \ \ \ └──\ areas/
+│\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ └──\ $AREA.yaml
+└──\ puppet\-hpc/
 \f[]
 .fi
 .PP
-\f[C]puppet\-hpc\f[] is a git checkout of the Generic Puppet
-Configuration for HPC Clusters you downloaded with this documentation.
-\f[C]private\-data\f[] is a directory containing all the specific data
-for your cluster.
+Where:
+.IP \[bu] 2
+\f[I]$CLUSTER\f[] is a cluster name,
+.IP \[bu] 2
+\f[I]$AREA\f[] is an area name (see \f[B]AREAS\f[] section for more
+details).
+.PP
+The \f[I]puppet\-hpc/\f[] directory is a checkout of Puppet\-HPC.
+.PP
+The \f[I]private\-data/\f[] directory contains all the specific data for
+every clusters of your organization.
+Please refer to Puppet\-HPC reference documentation for more details
+about the files hierarchy of this directory.
 It\[aq]s advised to also keep this in git and simply fetch a copy.
 .PP
 The destination should be shared between all the central storage
 servers.
 It must be accessible as a simple POSIX file system, via the Amazon S3
 API or a set of SFTP servers.
+.SH AREAS
+.PP
+\f[I]hpc\-config\-push\f[] supports splitting cluster configuration
+environments into multiple areas for security purpose.
+Each area has its own set of encryption keys.
+Please refer to Puppet\-HPC reference documentation for more details on
+this mechanism.
+.PP
+If multiple areas are declared into its configuration file,
+\f[I]hpc\-config\-push\f[] considers the first area to be the
+\f[B]main\f[] area.
+As a requirement, all the encrypted files located into the
+\f[I]private\-data/files/$CLUSTER\f[] directory must be encrypted with
+the cluster \f[B]main\f[] area files encryption key, and all the eyaml
+encrypted parameters in the
+\f[I]private\-data/hieradata/$CLUSTER/areas\f[] file must be encrypted
+with the cluster \f[B]main\f[] area eyaml encryption key.
+.PP
+When the configuration environment is pushed, \f[I]hpc\-config\-push\f[]
+performs on\-the\-fly re\-encryption of area\[aq]s sensitive data using
+area specific encryption keys.
+It includes the encrypted files (*.enc) located in the \f[I]cluster\f[]
+and the \f[I]$AREA\f[] subdirectories and the eyaml encrypted parameters
+in the \f[I]$CLUSTER/areas/$AREA.yaml\f[] file.
+.PP
+Then, \f[I]hpc\-config\-push\f[] generates a subset of the configuration
+environment for each area, excluding the sensitive data of all other
+areas.
+.PP
+This way, each area only has access to its own sensitive data encrypted
+with its own set of encryption keys.
+.PP
+By default, \f[I]hpc\-config\-push\f[] considers there is only one
+\f[B]default\f[] area, and no re\-encryption is performed.
 .SH CONFIGURATION FILE
 .PP
 The default configuration file is installed at
@@ -77,6 +130,7 @@ The \[aq][global]\[aq] section defines the defaults parameters used:
 cluster\ =\ <cluster\ name>
 environment\ =\ <default\ environment>
 version\ =\ <default\ version>
+areas\ =\ <list\ of\ cluster\ areas>
 destination\ =\ <default\ directory\ on\ central\ storage>
 mode\ =\ <push\ mode,\ can\ be\ \[aq]s3\[aq],\ \[aq]posix\[aq]\ or\ \[aq]sftp\[aq]>
 \f[]
