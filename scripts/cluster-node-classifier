@@ -94,6 +94,8 @@ def main():
     # areas are optional but require prefix
     if 'areas' in conf:
         site['parameters']['area'] = get_nodearea(conf['areas'], role)
+    else:
+        site['parameters']['area'] = 'default'
 
     print(yaml.dump(site))
 
