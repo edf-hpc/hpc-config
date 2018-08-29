@@ -482,16 +482,17 @@ def get_puppet_environment(source, environment, area, version='latest'):
 
 
 def gen_private_files_fact(source, environment, area):
- """Generate a custom static external fact for private_files_dir based on
-    source, environment and area."""
- logging.info("Generating private files directory external static fact %s",
-              FACTS_CONF_PATH)
- content = {
-   'private_files_dir':
-     "%s/%s/latest/files/%s" % (source, environment, area)
- }
- with open(FACTS_CONF_PATH, 'w+') as fact_f:
-     fact_f.write(yaml.dump(content))
+    """Generate a custom static external fact for private_files_dir based on
+       source, environment and area."""
+    logging.info("Generating private files directory external static fact %s",
+                 FACTS_CONF_PATH)
+    content = {
+        'private_files_dir':
+            "%s/%s/latest/files/%s" % (source, environment, area)
+    }
+
+    with open(FACTS_CONF_PATH, 'w+') as fact_f:
+        fact_f.write(yaml.dump(content))
 
 
 def puppet_apply(environment,
