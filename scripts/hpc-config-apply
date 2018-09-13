@@ -491,6 +491,11 @@ def gen_private_files_fact(source, environment, area):
             "%s/%s/latest/files/%s" % (source, environment, area)
     }
 
+    parent_dir = os.path.dirname(FACTS_CONF_PATH)
+    if not os.path.isdir(parent_dir):
+        logging.debug("Creating parent directory %s", parent_dir)
+        os.makedirs(parent_dir, 0o755)
+
     with open(FACTS_CONF_PATH, 'w+') as fact_f:
         fact_f.write(yaml.dump(content))
 
