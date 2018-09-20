@@ -527,6 +527,16 @@ def gen_env_conf():
         env_f.write("manifest=manifests/cluster.pp\n")
 
 
+def reenc_file(encrypted_file, source_key, dest_key):
+    logger.debug("reencrypt private file %s with cluster_decrypt_password",
+                 encrypted_file)
+    # decrypt and re-encrypt file
+    unencrypted_file = encrypted_file[:-4]
+    decrypt_file(encrypted_file, unencrypted_file, source_key)
+    encrypt_file(unencrypted_file, encrypted_file, dest_key)
+    os.remove(unencrypted_file)
+    return True
+
 def copy_reenc_private_files():
     """This procedure merges the cluster and $area private files directories
        into one $area hierarchy. Then, for all areas except the main one, it
@@ -536,6 +546,8 @@ def copy_reenc_private_files():
     # Find all files in conf.dir_files_private, decrypt them with main area
     # cluster_decrypt_passwd and re-encrypt them with cluster_decrypt_password of
     # each other area
+    pool = Pool()
+    results = []
     master_key = get_area_decrypt_password(conf.main_area)
     for area in conf.areas:
         # copy file in area subdir
@@ -549,13 +561,21 @@ def copy_reenc_private_files():
             # read area cluster_decrypt_password
             area_key = get_area_decrypt_password(area)
             for encrypted_file in encrypted_files:
-                logger.debug("reencrypt private file %s with area %s cluster_decrypt_password",
-                             encrypted_file, area)
-                # decrypt and re-encrypt file
-                unencrypted_file = encrypted_file[:-4]
-                decrypt_file(encrypted_file, unencrypted_file, master_key)
-                encrypt_file(unencrypted_file, encrypted_file, area_key)
-                os.remove(unencrypted_file)
+                results.append(pool.apply_async(
+                    reenc_file,
+                    [encrypted_file, master_key, area_key]
+                ))
+    pool.close()
+    pool.join()
+    success = 0
+    errors = 0
+    for result in results:
+        function_return = result.get()
+        if function_return:
+            success += 1
+        else:
+            errors += 1
+    logger.info("Reenc Files: Reencrypted %d files, %d errors", success, errors)
 
 
 def _push_posix():
