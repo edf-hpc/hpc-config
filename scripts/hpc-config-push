@@ -49,6 +49,8 @@ import yaml
 from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import Pool
 
+_area_passwords_cache = {}
+
 def conf_copy(src, dst, *, follow_symlinks=True):
     """Alternate copy function for shutil.copytree() in order to properly
        resolve and copy symlinks to directories. It is used to copy private
@@ -338,6 +340,9 @@ def get_area_decrypt_password(area):
 
        This function can only work _before_ eyaml files are re-encrypted with
        reencrypt_area_eyaml_file()."""
+    if area in _area_passwords_cache.keys():
+        return _area_passwords_cache[area]
+
     # get cluster_decrypt_password from area yaml file using eyaml and system
     # keys:
     #   eyaml decrypt --file $hieradata/$cluster/areas/$area.yaml
@@ -346,7 +351,8 @@ def get_area_decrypt_password(area):
     cmd = ['eyaml', 'decrypt', '--file', area_yaml_path]
     eyaml_run = subprocess.check_output(cmd)
     area_yaml = yaml.load(eyaml_run)
-    return area_yaml['cluster_decrypt_password']
+    _area_passwords_cache[area] = area_yaml['cluster_decrypt_password']
+    return _area_passwords_cache[area]
 
 
 def encrypt_file(infile, outfile, key):
