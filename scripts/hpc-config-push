@@ -557,7 +557,10 @@ def copy_reenc_private_files():
                       private_files_area_build_dir)
         if area != conf.main_area:
             # find all encrypted files
-            encrypted_files = glob.glob(os.path.join(private_files_area_build_dir, '**/*.enc'))
+            encrypted_files = glob.glob(
+                os.path.join(private_files_area_build_dir, '**/*.enc'),
+                recursive=True
+            )
             # read area cluster_decrypt_password
             area_key = get_area_decrypt_password(area)
             for encrypted_file in encrypted_files:
