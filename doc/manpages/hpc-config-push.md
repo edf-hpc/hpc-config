@@ -7,7 +7,7 @@ hpc-config-push - push puppet-hpc configuration into central storage
 # SYNOPSIS
 
     hpc-config-push [-h] [-d] [-c [CONF]] [-e [ENVIRONMENT]] [-V [VERSION]]
-                    [--full-tmp-cleanup]
+                    [--full-tmp-cleanup]i [-l] [--enable-python-warnings]
 
 # DESCRIPTION
 
@@ -27,6 +27,7 @@ private data and files and packaged Puppet modules.
     -V [VERSION], --version [VERSION]
                           Version of the pushed config
     --full-tmp-cleanup    Full tmp dir cleanup.
+    -l, --list            List pushed environments.
     --enable-python-warnings
                           Enable some python warnings (deprecation and
                           future warnings are hidden by default)
@@ -179,6 +180,10 @@ To simply push the current configuration in the default environment:
 To push the current configuration in the 'test' environment:
 
     hpc-config-push -e test
+
+To list the already pushed environments:
+
+    hpc-config-push --list
 
 # SEE ALSO
 

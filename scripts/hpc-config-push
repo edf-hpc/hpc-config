@@ -105,6 +105,7 @@ class AppConf():
         # action
 
         self.full_tmp_cleanup = False
+        self.list_environments = False
 
         # paths
 
@@ -269,6 +270,9 @@ def parse_args():
     parser.add_argument('--full-tmp-cleanup',
                         help='Full tmp dir cleanup.',
                         action='store_true')
+    parser.add_argument('-l', '--list',
+                        help='List pushed environments.',
+                        action='store_true')
     parser.add_argument('--enable-python-warnings',
                         help="Don't hide some Python warnings.",
                         action='store_true')
@@ -305,6 +309,8 @@ def override_conf(args):
         conf.version = args.version
     if args.full_tmp_cleanup:
         conf.full_tmp_cleanup = True
+    if args.list:
+        conf.list_environments = True
 
 
 def init_tmpd():
@@ -1005,6 +1011,100 @@ def push():
         logger.error("unsupported push mode %s", conf.mode)
         sys.exit(1)
 
+def _list_environments_posix():
+    """List pushed environments in POSIX directory."""
+
+    logger.info("posix list: in %s", conf.destination_root)
+
+    if not os.path.isdir(conf.destination_root):
+        logger.info("posix list: no environment")
+        return
+
+    envs = sorted(os.listdir(conf.destination_root))
+    logger.info("posix list: available environment: %s", ' '.join(envs))
+
+def _list_environments_s3():
+    """List pushed environments in Ceph/S3 Bucket."""
+
+    logger.info("S3 list: listing environments in bucket %s", conf.s3_bucket_name)
+
+    conn = boto.connect_s3(
+        aws_access_key_id=conf.s3_access_key,
+        aws_secret_access_key=conf.s3_secret_key,
+        host=conf.s3_host,
+        port=conf.s3_port,
+        is_secure=False,
+        calling_format=boto.s3.connection.OrdinaryCallingFormat(),
+    )
+    bucket = conn.get_bucket(conf.s3_bucket_name)
+    bucket.set_acl('public-read')
+
+    logger.info("S3 list: get remote objects list")
+    objs = bucket.list(prefix=conf.destination_root)
+    envs = []
+    for obj in objs:
+        name_members = obj.name.split('/')
+        if len(name_members) == 3:
+            envs.append(name_members[1])
+    logger.info("S3 list: available environments: %s", ' '.join(sorted(envs)))
+
+def _sftp_list_host(host, conf):
+    """List pushed environments on a specific SFTP server."""
+
+    key = paramiko.RSAKey.from_private_key_file(conf.sftp_private_key)
+    username = conf.sftp_username
+
+    try:
+        transport = paramiko.Transport((host, 22))
+        transport.connect(username=username, pkey=key)
+    except socket.gaierror as e:
+        logger.error("SFTP list: Failed to connect to host %s" % host)
+        logger.info("SFTP list: Connection error: %s." % e)
+        return
+    except paramiko.ssh_exception.SSHException as e:
+        logger.error("SFTP list: SSH failed to %s@%s" % (username, host))
+        logger.info("SFTP list: SSH error: %s." % e)
+        return
+    sftp_client = paramiko.SFTPClient.from_transport(transport)
+
+    return sorted(sftp_client.listdir(conf.destination_root))
+
+def _list_environments_sftp():
+    """List pushed environment asynchronously on all SFTP servers."""
+
+    logger.info("SFTP list: list environments on hosts %s", conf.sftp_hosts)
+
+    pool = Pool()
+    results = {}
+    for host in conf.sftp_hosts:
+       results[host] = pool.apply_async(_sftp_list_host, [host, conf])
+    pool.close()
+    finished = 0
+    while finished < len(results):
+        finished = 0
+        for result in results.values():
+            if result.ready():
+                finished += 1
+        logger.info("SFTP list: Finished host %d/%d", finished, len(results))
+        time.sleep(1)
+    for host, result in results.items():
+        envs = result.get()
+        logger.info("SFTP list: host: %s environments: %s", host, ' '.join(envs))
+    pool.join()
+
+def list_environments():
+    """List pushed environments by calling the appropriate function depending
+       on the storage backend."""
+    if conf.mode == 'posix':
+        _list_environments_posix()
+    elif conf.mode == 'sftp':
+        _list_environments_sftp()
+    elif conf.mode == 's3':
+        _list_environments_s3()
+    else:
+        logger.error("environments listing unsupported for mode %s", conf.mode)
+        sys.exit(1)
+
 def cleanup_run():
     """Remove the run tmp dir."""
 
@@ -1036,6 +1136,8 @@ def main():
     #
     if conf.full_tmp_cleanup:
         cleanup_full()
+    elif conf.list_environments:
+        list_environments()
     else:
         init_tmpd()
         decrypt_extract_eyaml_keys()

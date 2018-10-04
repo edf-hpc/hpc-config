@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Added
 - Introduce new script cluster-node-classifier designed to be used as ENC
 - h-c-apply: generate static external fact for private\_files\_dir
+- h-c-push: add ability to list pushed environments
 
 ## [1.1.7] - 2018-07-20
 
