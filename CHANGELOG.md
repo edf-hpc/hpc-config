@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - h-c-{push,apply}: propagate cluster-node-classifier ENC script input file
   instead of external fact YAML file
 - h-c-push: generate separate configuration environment for all areas, with
-  on-the-fly re-encryptions.
+  on-the-fly/parallel re-encryptions.
 - h-c-apply: download the configuration environment of a specific area
 
 ### Added
