@@ -18,6 +18,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - h-c-apply: generate static external fact for private\_files\_dir
 - h-c-push: add ability to list pushed environments
 
+### Fixed
+- h-c-apply: fix retry loop when fixed source port (<1024) is already used by
+  another TCP connection.
+
 ## [1.1.7] - 2018-07-20
 
 ### Changed

@@ -320,7 +320,7 @@ def http_get_file(url, root_source_port=False):
             logging.debug("Trying to connect with source port %s", source_port)
             http.connect()
             connect_ok = True
-        except OSError as err:
+        except urllib3.exceptions.NewConnectionError as err:
             logging.warn(
                 "Failed to connect to http(s) server %s with " % url +
                 "source port: %s, error: %s. Retrying..." % (source_port, err)
