@@ -826,9 +826,8 @@ def _s3_rmrf(bucket, prefix):
         errors += len(report.errors)
     logger.info("S3 push: Deleted %d keys, %d errors", deleted, errors)
 
-def _push_s3():
-    logger.info("S3 push: pushing data in bucket %s", conf.s3_bucket_name)
-
+def _bucket_conn_s3(conf):
+    """Connect to S3 server and return the bucket."""
     conn = boto.connect_s3(
         aws_access_key_id=conf.s3_access_key,
         aws_secret_access_key=conf.s3_secret_key,
@@ -839,6 +838,12 @@ def _push_s3():
     )
     bucket = conn.get_bucket(conf.s3_bucket_name)
     bucket.set_acl('public-read')
+    return bucket
+
+def _push_s3():
+    logger.info("S3 push: pushing data in bucket %s", conf.s3_bucket_name)
+
+    bucket = _bucket_conn_s3(conf)
 
     logger.info("S3 push: get remote objects list")
     obj_md5s = _s3_list_md5(bucket, conf.destination)
@@ -942,8 +947,8 @@ def _sftp_upload(source_path, sftp_client, destination_path, clean=True):
         # Set Perms
         sftp_client.chmod(dest_file_path, 0o644)
 
-def _sftp_push_host(host, conf):
-
+def _sftp_connect(host, conf, verb):
+    """Connect to SFTP server host. Verb is used in prefix of log messages."""
     key = paramiko.RSAKey.from_private_key_file(conf.sftp_private_key)
     username = conf.sftp_username
 
@@ -951,14 +956,18 @@ def _sftp_push_host(host, conf):
         transport = paramiko.Transport((host, 22))
         transport.connect(username=username, pkey=key)
     except socket.gaierror as e:
-        logger.error("SFTP push: Failed to connect to host %s" % host)
-        logger.info("SFTP push: Connection error: %s." % e)
+        logger.error("SFTP %s: Failed to connect to host %s", verb, host)
+        logger.info("SFTP %s: Connection error: %s.", verb, e)
         return
     except paramiko.ssh_exception.SSHException as e:
-        logger.error("SFTP push: SSH failed to %s@%s" % (username, host))
-        logger.info("SFTP push: SSH error: %s." % e)
+        logger.error("SFTP %s: SSH failed to %s@%s", verb, username, host)
+        logger.info("SFTP %s: SSH error: %s.", verb, e)
         return
-    sftp_client = paramiko.SFTPClient.from_transport(transport)
+    return paramiko.SFTPClient.from_transport(transport)
+
+def _sftp_push_host(host, conf):
+
+    sftp_client = _sftp_connect(host, conf, verb='push')
 
     logger.debug("SFTP push: Cleaning destination %s", conf.destination)
     _sftp_rmrf(sftp_client, conf.destination)
@@ -1028,16 +1037,7 @@ def _list_environments_s3():
 
     logger.info("S3 list: listing environments in bucket %s", conf.s3_bucket_name)
 
-    conn = boto.connect_s3(
-        aws_access_key_id=conf.s3_access_key,
-        aws_secret_access_key=conf.s3_secret_key,
-        host=conf.s3_host,
-        port=conf.s3_port,
-        is_secure=False,
-        calling_format=boto.s3.connection.OrdinaryCallingFormat(),
-    )
-    bucket = conn.get_bucket(conf.s3_bucket_name)
-    bucket.set_acl('public-read')
+    bucket = _bucket_conn_s3(conf)
 
     logger.info("S3 list: get remote objects list")
     objs = bucket.list(prefix=conf.destination_root)
@@ -1050,22 +1050,7 @@ def _list_environments_s3():
 
 def _sftp_list_host(host, conf):
     """List pushed environments on a specific SFTP server."""
-
-    key = paramiko.RSAKey.from_private_key_file(conf.sftp_private_key)
-    username = conf.sftp_username
-
-    try:
-        transport = paramiko.Transport((host, 22))
-        transport.connect(username=username, pkey=key)
-    except socket.gaierror as e:
-        logger.error("SFTP list: Failed to connect to host %s" % host)
-        logger.info("SFTP list: Connection error: %s." % e)
-        return
-    except paramiko.ssh_exception.SSHException as e:
-        logger.error("SFTP list: SSH failed to %s@%s" % (username, host))
-        logger.info("SFTP list: SSH error: %s." % e)
-        return
-    sftp_client = paramiko.SFTPClient.from_transport(transport)
+    sftp_client = _sftp_connect(host, conf, verb='list')
 
     return sorted(sftp_client.listdir(conf.destination_root))
 
