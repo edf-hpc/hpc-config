@@ -42,8 +42,8 @@ files via HTTP and applies this configuration on a cluster node.
     --keys-source [KEYS_SOURCE], -k [KEYS_SOURCE]
                           Secret keys source
     --tags [TAGS]         Puppet tags (comma separated list)
-    --verbose, -v         More output, can be specified multiple times.
-
+    --verbose, -v         More output, can be specified multiple times (default:
+                          -v if stdout is TTY, nothing otherwise)
 
 # PARAMETERS
 
@@ -104,6 +104,16 @@ option can be used to preserve those data on the node after the run.
 
 The permissions of directories containing sensitive data (keys and Puppet
 environment are modified to make them only readable by root.
+
+# OUTPUT
+
+If the stdout of hpc-config-apply is a TTY, the first verbose mode is enabled
+by default. Additional output can be obtained by setting multiple verbose
+flags.
+
+If the stdout is not a TTY, hpc-config-apply will only print warnings and
+errors on stderr and the output of Puppet will be directed to syslog by
+default. This can be changed by setting at least one verbose flag in parameter.
 
 # EXAMPLES
 
