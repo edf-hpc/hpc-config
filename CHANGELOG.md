@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - h-c-apply: fix retry loop when fixed source port (<1024) is already used by
   another TCP connection.
+- h-c-apply: add missing explanation in manpage for output and TTY (fix #3)
 
 ## [1.1.7] - 2018-07-20
 
