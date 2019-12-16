@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+### [Unreleased]
+
+## [2.0.2]
+
+### Changed
+- h-c-push: use digest type sha256 for openssl command instead of the default
+  type, for encryption and decryption of files
 
 ## [2.0.1]
 
