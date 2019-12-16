@@ -11,8 +11,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Fix mismatching version and tag in 2.0.1 
 
-### Fixed
-
 ## [2.0.2]
 
 ### Changed
