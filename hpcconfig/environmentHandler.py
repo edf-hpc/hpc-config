@@ -92,14 +92,14 @@ class environmentHandlerFactory(object):
 
     def __new__(cls ,conf):
         if conf.mode == 'posix':
-            from environmentHandler_posix import environmentHandler_posix
-            return environmentHandler_posix(conf)
+            from hpcconfig import environmentHandler_posix as ehp
+            return ehp.environmentHandler_posix(conf)
         elif conf.mode == 'sftp':
-            from environmentHandler_sftp import environmentHandler_sftp
-            return environmentHandler_sftp(conf)
+            from hpcconfig import environmentHandler_sftp as ehsftp
+            return ehsftp.environmentHandler_sftp(conf)
         elif conf.mode == 's3':
-            from environmentHandler_s3 import environmentHandler_s3
-            return environmentHandler_s3(conf)
+            from hpcconfig import environmentHandler_s3 as ehs3
+            return ehs3.environmentHandler_s3(conf)
         else:
             raise NotImplementedError("invalid configuration mode provided", conf.mode)
 

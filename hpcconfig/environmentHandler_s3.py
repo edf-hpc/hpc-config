@@ -39,12 +39,12 @@ logger = logging.getLogger(__name__)
 import sys
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-from environmentHandler import environmentHandlerInterface
+from hpcconfig import environmentHandler as eh
 
-class environmentHandler_s3(environmentHandlerInterface):
+class environmentHandler_s3(eh.environmentHandlerInterface):
 
     def __init__(self,conf):
-        environmentHandlerInterface.__init__(self, conf)
+        eh.environmentHandlerInterface.__init__(self, conf)
 
     def list(self):
         """List pushed environments in Ceph/S3 Bucket."""
@@ -98,7 +98,7 @@ class environmentHandler_s3(environmentHandlerInterface):
     def download(self):
         raise NotImplementedError("TODO")
 
-    @environmentHandlerInterface.arealoop
+    @eh.environmentHandlerInterface.arealoop
     def handle_area(self, area, **kwargs):
         logger.info("S3 push: copying area %s tarball", area)
         area_dest = os.path.join(self.conf.destination, area)

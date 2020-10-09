@@ -43,7 +43,7 @@ import yaml
 from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import Pool
 
-from environmentHandler import environmentHandlerFactory
+from hpcconfig import environmentHandler
 
 _area_passwords_cache = {}
 
@@ -607,7 +607,7 @@ def main():
     parse_conf()
     override_conf(args)
     conf.dump()
-    envHandler = environmentHandlerFactory(conf)
+    envHandler = environmentHandler.environmentHandlerFactory(conf)
 
     #
     # run

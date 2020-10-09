@@ -33,12 +33,12 @@ logger = logging.getLogger(__name__)
 import sys
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-from environmentHandler import environmentHandlerInterface
+from hpcconfig import environmentHandler as eh
 
-class environmentHandler_posix(environmentHandlerInterface):
+class environmentHandler_posix(eh.environmentHandlerInterface):
 
     def __init__(self,conf):
-        environmentHandlerInterface.__init__(self, conf)
+        eh.environmentHandlerInterface.__init__(self, conf)
 
     def list(self):
         """List pushed environments in POSIX directory."""
@@ -96,7 +96,7 @@ class environmentHandler_posix(environmentHandlerInterface):
     def download(self):
         raise NotImplementedError("TODO")
 
-    @environmentHandlerInterface.arealoop
+    @eh.environmentHandlerInterface.arealoop
     def handle_area(self, area):
         logger.debug("posix push: copying area %s tarball", area)
         area_dest = os.path.join(self.conf.destination, area)
