@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="hpcconfig",
-    version="2.0.4",
+    version="3.0.1",
     author="ccnhpc",
     author_email="dsp-cspito-ccn-hpc@edf.fr",
     description="",
@@ -20,10 +20,12 @@ setuptools.setup(
     ],
     scripts = [ "hpcconfig/hpc-config-push", "hpcconfig/hpc-config-apply" ],
     install_requires=[
-    'boto',
     'urllib3',
     'pyyaml',
     'paramiko',
     ],
+    extras_require={
+        "AWS":  ["boto"],
+    },
     python_requires='>=3.4',
 )
