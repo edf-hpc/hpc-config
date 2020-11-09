@@ -1,0 +1,3 @@
+---
+cluster_name: 'testcluster'
+cluster_prefix: 'tc'
