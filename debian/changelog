@@ -1,3 +1,9 @@
+hpc-config (2.0.5-0sci9u1) scibian9; urgency=medium
+
+  * Imported Upstream version 2.0.5
+
+ -- Thomas HAMEL <thomas-externe.hamel@edf.fr>  Wed, 12 May 2021 11:46:19 +0200
+
 hpc-config (2.0.4-0sci9u2) scibian9; urgency=medium
 
   * force dependance to puppet5
