@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### [Unreleased]
 
+## [2.0.6]
+
+### Fixed
+- h-c-apply: Support centos as well as redhat
+
 ## [2.0.5]
 
 ### Fixed
