@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020 EDF SA
+# Copyright (C) 2016-2021 EDF SA
 # Contact:
 #       CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
 #       1, Avenue du General de Gaulle
@@ -39,6 +39,12 @@ import yaml
 import platform
 
 from sys import stdout
+
+# Older urllib3 use the system error directly
+try:
+    connection_error = urllib3.exceptions.NewConnectionError
+except AttributeError:
+    connection_error = OSError
 
 distribution = platform.dist()[0]
 distribution_version = platform.dist()[1]
@@ -323,7 +329,7 @@ def http_get_file(url, root_source_port=False):
             logging.debug("Trying to connect with source port %s", source_port)
             http.connect()
             connect_ok = True
-        except urllib3.exceptions.NewConnectionError as err:
+        except connection_error as err:
             logging.warn(
                 "Failed to connect to http(s) server %s with " % url +
                 "source port: %s, error: %s. Retrying..." % (source_port, err)
