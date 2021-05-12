@@ -51,7 +51,7 @@ distribution_version = platform.dist()[1]
 
 # Should be fixed on Fedora >= 23 and RHEL > 7
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=902094
-if distribution == 'redhat':
+if distribution in {'redhat','centos'}:
     LOCALE = 'en_US.UTF-8'
 else:
     LOCALE = 'C.UTF-8'
