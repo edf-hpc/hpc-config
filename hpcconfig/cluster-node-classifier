@@ -28,6 +28,7 @@ from __future__ import print_function
 import sys
 import re
 import yaml
+from ClusterShell.NodeSet import NodeSet
 
 CONF='/etc/hpc-config/cluster-nodes.yaml'
 
@@ -58,11 +59,16 @@ def get_noderole(prefix, nodename):
     return match.group(1)
 
 
-def get_nodearea(areas, role):
+def get_nodearea(areas, role, nodename):
 
-    for area, roles in areas.items():
-        if role in roles:
-            return area
+    list = nodename.split(".")
+    node = list[0]
+    for area, descriptors in areas.items():
+        for descriptor in descriptors:
+            if node in NodeSet(descriptor):
+                return area
+            if role == descriptor:
+                return area
 
     print('unable to find area for role',
           role, file=sys.stderr)
@@ -93,7 +99,7 @@ def main():
 
     # areas are optional but require prefix
     if 'areas' in conf:
-        site['parameters']['area'] = get_nodearea(conf['areas'], role)
+        site['parameters']['area'] = get_nodearea(conf['areas'], role, nodename)
     else:
         site['parameters']['area'] = 'default'
 
