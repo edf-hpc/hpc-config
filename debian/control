@@ -2,7 +2,7 @@ Source: hpc-config
 Section: admin
 Priority: optional
 Maintainer: Scibian Project <packaging@scibian.org>
-Build-Depends: debhelper (>= 9), dh-systemd (>= 1.5)
+Build-Depends: debhelper (>= 10), dh-systemd (>= 1.5)
 Standards-Version: 3.9.6
 Homepage: https://github.com/edf-hpc/puppet-hpc
 Vcs-Git: https://github.com/scibian/hpc-config.git
@@ -12,7 +12,7 @@ Package: hpc-config-apply
 Architecture: all
 Depends:
  ${misc:Depends},
- clustershell,
+ python3-clustershell,
  hiera-eyaml,
  lsb-release,
  puppet | puppet5,

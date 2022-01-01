@@ -3,7 +3,7 @@ Upstream-Name: hpc-config
 Source: https://github.com/edf-hpc/hpc-config
 
 Files: debian/*
-Copyright: © 2017 Scibian Project <legal@scibian.org>
+Copyright: © 2017-2022 Scibian Project <legal@scibian.org>
 License: GPL-3+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ License: GPL-3+
   at /usr/share/common-licenses/GPL-3.
 
 Files: *
-Copyright: © 2016-2017 EDF CCN-HPC <dsp-cspit-ccn-hpc@edf.fr>
+Copyright: © 2016-2022 EDF CCN-HPC <dsp-cspit-ccn-hpc@edf.fr>
 License: GPL-2+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
