@@ -1,3 +1,9 @@
+hpc-config (3.0.1-0sci9u1) scibian9; urgency=medium
+
+  * Imported Upstream version 3.0.1
+
+ -- KWAME AMEDODJI <kwame-externe.amedodji@edf.fr>  Sat, 01 Jan 2022 13:40:33 +0100
+
 hpc-config (2.0.6-0sci9u1) scibian9; urgency=medium
 
   * Imported Upstream version 2.0.6
