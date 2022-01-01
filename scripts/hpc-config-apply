@@ -53,33 +53,37 @@ distribution_version = platform.dist()[1]
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=902094
 if distribution in {'redhat','centos'}:
     LOCALE = 'en_US.UTF-8'
+    PUPPET_CONF_PATH = '/etc/puppetlabs/puppet'
+    PUPPET_BIN_PATH = '/opt/puppetlabs/puppet/bin/puppet'
 else:
     LOCALE = 'C.UTF-8'
+    PUPPET_CONF_PATH = '/etc/puppet'
+    PUPPET_BIN_PATH = '/usr/bin/puppet'
 
 DEFAULT_TMPDIR = '/tmp'
 DEFAULT_ENVIRONMENT = 'production'
 DEFAULT_AREA = 'default'
 
 PUPPET_ENV_ARCHIVE_NAME = 'puppet-config-environment.tar.xz'
-PUPPET_ENV_BASE_PATH = '/etc/puppet/environments'
+PUPPET_ENV_BASE_PATH = '%s/environments' % PUPPET_CONF_PATH
 PUPPET_ENV_BASE_OWNER = 0
 PUPPET_ENV_BASE_GROUP = 0
 PUPPET_ENV_BASE_MODE = 0o700
 
 KEYS_ARCHIVE_NAME = 'keys.tar.xz'
-KEYS_BASE_PATH = '/etc/puppet/secure'
+KEYS_BASE_PATH = '%s/secure' % PUPPET_CONF_PATH
 KEYS_BASE_OWNER = 0
 KEYS_BASE_GROUP = 0
 KEYS_BASE_MODE = 0o700
 
 HIERA_CONF_ARCHIVE_NAME = 'hiera.yaml'
-HIERA_CONF_PATH = '/etc/puppet/hiera.yaml'
+HIERA_CONF_PATH = '%s/hiera.yaml' % PUPPET_CONF_PATH
 
 NODES_YAML_ARCHIVE_NAME = 'cluster-nodes.yaml'
 NODES_YAML_PATH = '/etc/hpc-config/cluster-nodes.yaml'
 
 PUPPET_CONF_ARCHIVE_NAME = 'puppet.conf'
-PUPPET_CONF_PATH = '/etc/puppet/puppet.conf'
+PUPPET_CONF_PATH = '%s/puppet.conf' % PUPPET_CONF_PATH
 
 FACTS_CONF_PATH = '/var/lib/puppet/facts.d/hpc-config-facts.yaml'
 
@@ -545,7 +549,7 @@ def puppet_apply(environment,
     # environment is puppet environment
     # env_vars is process environment variables
     actual_code = subprocess.call(
-        ['/usr/bin/puppet', 'apply'] +
+        [PUPPET_BIN_PATH, 'apply'] +
         apply_options +
         ['--environment', environment, manifests_path],
         env=env_vars

@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### [Unreleased]
 
+## [3.0.1]
+
+### Fixed
+- new node classifier as an explicit given role name
+- backport features introduced in rhel8
+- variabilized redhat versus debian puppet paths
+
 ## [2.0.6]
 
 ### Fixed
