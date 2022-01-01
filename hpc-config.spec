@@ -2,7 +2,7 @@
 %{!?__lib_dir:%global __lib_dir /usr/lib}
 
 Name:		hpc-config
-Version:	3.0.1
+Version:	3.0.3
 Release:	1%{?dist}
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
@@ -84,6 +84,11 @@ on a central location or a set of servers.
 %{python3_sitelib}/*
 
 %changelog
+
+* Wed Jan 01 2022 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.0.3
+- New release 3.0.3
+- c-n-classifier: support explicit given role name
+- h-c-apply: variabilized rhel vs debian puppet paths
 
 * Fri Oct 30 2020 Guillaume RANQUET <guillaume-externe.ranquet@edf.fr> - 3.0.2
 - New release 3.0.2
