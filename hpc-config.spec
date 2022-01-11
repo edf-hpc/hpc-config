@@ -2,14 +2,14 @@
 %{!?__lib_dir:%global __lib_dir /usr/lib}
 
 Name:		hpc-config
-Version:	3.0.3
+Version:	3.0.4
 Release:	1%{?dist}
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
 URL:		https://github.com/scibian/hpc-config
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython, rubygem-hiera-eyaml
+BuildRequires: python36, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython, rubygem-hiera-eyaml
 
 %global debug_package %{nil}
 
@@ -22,14 +22,13 @@ organizations.
 
 %prep
 #[ -f %{_sourcedir}/%{name}-%{version}.tar.gz ] &&
-%setup -q -n %{name}
+%setup -q
 ##|| {
 #    [ -d %{name}-%{version} ] || git clone %{url}.git %{name}-%{version}
 #    cd %{name}-%{version} # for git
 ##}
 
 %build
-%{__python3} setup.py build --build-scripts=%{_sbindir}
 
 %install
 #rm -rf %{buildroot} # for git
@@ -42,8 +41,8 @@ install -m 755 README.md CHANGELOG.md %{_builddir}
 install -m 755 -d %{buildroot}%{_mandir}
 install -m 755 doc/manpages/%{name}-*.1 %{buildroot}%{_mandir}
 install -m 755 -d %{buildroot}%{__lib_dir}/%{name}/exec
-install -m 755 hpcconfig/cluster-node-classifier %{buildroot}%{__lib_dir}/%{name}/exec
-%{__python3} setup.py install --install-scripts=%{_sbindir} --root %{buildroot}
+install -m 755 scripts/cluster-node-classifier %{buildroot}%{__lib_dir}/%{name}/exec
+install -m 755 scripts/%{name}-* %{buildroot}%{_sbindir}
 
 
 %clean
@@ -81,9 +80,14 @@ on a central location or a set of servers.
 %doc README.md CHANGELOG.md
 %{_sbindir}/hpc-config-push
 %{_mandir}
-%{python3_sitelib}/*
 
 %changelog
+
+* Tue Jan 11 2022 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.0.4
+- New release 3.0.4
+- revert support of python setuptools
+- enforce python36
+- add version to uncompress package name dir
 
 * Wed Jan 01 2022 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.0.3
 - New release 3.0.3
