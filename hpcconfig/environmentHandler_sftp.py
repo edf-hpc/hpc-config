@@ -35,7 +35,6 @@ from multiprocessing import Pool
 import logging
 logger = logging.getLogger(__name__)
 import sys
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 from hpcconfig import environmentHandler as eh
 
