@@ -389,8 +389,6 @@ def decrypt_extract_eyaml_keys():
             logger.debug("decrypt/extract eyaml keys %s of area %s", other_area_keys_path_in, area)
             os.makedirs(os.path.join(conf.dir_tmp_keys, area))
             decrypt_file(other_area_keys_path_in, other_area_keys_path_out,main_area_encoding_key)
-            # decrypt: openssl aes-256-cbc -md sha256 -in $IN -out $OUT -key $KEY
-            # encrypt: openssl aes-256-cbc -md sha256 -d -in $IN -out $OUT -key $KEY
             other_area_keys_arch = tarfile.open(other_area_keys_path_out, mode='r')
             other_area_keys_arch.extractall(path=os.path.join(conf.dir_tmp_keys, area))
 
