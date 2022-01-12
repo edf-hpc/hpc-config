@@ -7,14 +7,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### [Unreleased]
 - apply: Use puppet upstream packaging paths
 
-## [2.0.5]
-
-### Added
-- h-c.spec: RPM spec file
-
-### Changed
-- Update scripts/conf/manpage from latest debian release
-
 ## [3.0.1]
 
 ### Fixed
