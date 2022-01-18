@@ -36,9 +36,9 @@ import logging
 import io
 import shutil
 import yaml
-import platform
-
 from sys import stdout
+
+from hpcconfig.system import os_distribution
 
 # Older urllib3 use the system error directly
 try:
@@ -46,12 +46,9 @@ try:
 except AttributeError:
     connection_error = OSError
 
-distribution = platform.dist()[0]
-distribution_version = platform.dist()[1]
-
 # Should be fixed on Fedora >= 23 and RHEL > 7
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=902094
-if distribution in {'redhat','centos'}:
+if os_distribution() in {'redhat','centos'}:
     LOCALE = 'en_US.UTF-8'
     PUPPET_CONF_PATH = '/etc/puppetlabs/puppet'
     PUPPET_BIN_PATH = '/opt/puppetlabs/puppet/bin/puppet'

@@ -44,6 +44,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import Pool
 
 from hpcconfig import environmentHandler
+from hpcconfig.system import os_distribution, os_major_version
 
 _area_passwords_cache = {}
 
@@ -357,21 +358,39 @@ def get_area_decrypt_password(area):
     return _area_passwords_cache[area]
 
 
+# Returns a boolean to tell if password derivation can be used with OpenSSL.
+# It is disabled on Debian < 10 (eg. in stretch) because it is not supported
+# by openssl provided in these old distributions.
+#
+# This code can be safely removed when Debian 9 stretch support is dropped.
+def enable_password_derivation():
+
+    return os_distribution() != 'debian' or os_major_version() > 9
+
+
 def encrypt_file(infile, outfile, key):
     """Run openssl to encrypt infile with AES key."""
-    cmd = ['openssl', 'aes-256-cbc', '-md', 'sha256',
+    cmd = ['openssl', 'enc', '-aes-256-cbc', '-md', 'sha256',
            '-in', infile,
            '-out', outfile,
            '-k', key ]
+    if enable_password_derivation():
+        cmd[3:3] = ['-iter', '+100000', '-pbkdf2' ]
+    else:
+        logger.debug("password derivation is disabled on this system")
     subprocess.check_call(cmd)
 
 
 def decrypt_file(infile, outfile, key):
     """Run openssl to decrypt infile with AES key."""
-    cmd = ['openssl', 'aes-256-cbc', '-md', 'sha256', '-d',
+    cmd = ['openssl', 'enc', '-aes-256-cbc', '-md', 'sha256', '-d',
            '-in', infile,
            '-out', outfile,
            '-k', key ]
+    if enable_password_derivation():
+        cmd[3:3] = ['-iter', '+100000', '-pbkdf2' ]
+    else:
+        logger.debug("password derivation is disabled on this system")
     subprocess.check_call(cmd)
 
 
