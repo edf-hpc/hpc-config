@@ -4,8 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-### [Unreleased]
-- apply: Use puppet upstream packaging paths
+## [Unreleased]
+
+### Added
+- h-c-push: factorize openssl cmd generation
+- h-c-push: use password derivation when available
+
+### Fixed
+- h-c-push: handle failed openssl command
+- h-c-push: remove double logging handler
+
+### Removed
+- h-c-push: remove useless comments
 
 ## [3.0.1]
 
@@ -13,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - new node classifier as an explicit given role name
 - backport features introduced in rhel8
 - variabilized redhat versus debian puppet paths
+- apply: Use puppet upstream packaging paths
 
 ## [2.0.6]
 
