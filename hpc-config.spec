@@ -29,6 +29,7 @@ organizations.
 ##}
 
 %build
+%{__python3} setup.py build
 
 %install
 #rm -rf %{buildroot} # for git
@@ -41,16 +42,28 @@ install -m 755 README.md CHANGELOG.md %{_builddir}
 install -m 755 -d %{buildroot}%{_mandir}
 install -m 755 doc/manpages/%{name}-*.1 %{buildroot}%{_mandir}
 install -m 755 -d %{buildroot}%{__lib_dir}/%{name}/exec
-install -m 755 scripts/cluster-node-classifier %{buildroot}%{__lib_dir}/%{name}/exec
-install -m 755 scripts/%{name}-* %{buildroot}%{_sbindir}
+install -m 755 hpcconfig/cluster-node-classifier %{buildroot}%{__lib_dir}/%{name}/exec
+%{__python3} setup.py install --install-scripts=%{_sbindir} --root %{buildroot}
 
 
 %clean
 rm -rf %{buildroot}
 
+%package common
+Summary: %{name} library
+Requires: python3, python3-pyyaml, python3-urllib3, python3-paramiko
+
+%description common
+This package provide the hpc-config library required by hpc-config-apply
+and hpc-config-push tools.
+
+%files common
+%doc README.md CHANGELOG.md
+%{python3_sitelib}/*
+
 %package apply
 Summary: %{name}-apply script to deploy the configuration on a node
-Requires: python3, python3-pyyaml, python3-urllib3, python3-paramiko
+Requires: %{name}-common
 
 %description apply
 This package provide the hpc-config-apply script necessary to deploy the
@@ -59,7 +72,6 @@ It also provide a service file that applies it during the boot sequence.
 
 %files apply
 %defattr(-,root,root,-)
-%doc README.md CHANGELOG.md
 %{_sbindir}/hpc-config-apply
 %{__unit_dir}/%{name}-apply.service
 %{_sysconfdir}/%{name}
@@ -69,7 +81,7 @@ It also provide a service file that applies it during the boot sequence.
 
 %package push
 Summary: %{name}-push script to deploy the configuration on a node
-Requires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython, rubygem-hiera-eyaml
+Requires: %{name}-common python3-GitPython, rubygem-hiera-eyaml
 
 %description push
 This package provide the hpc-config-push script to push the configuration
@@ -77,7 +89,6 @@ on a central location or a set of servers.
 
 %files push
 %defattr(-,root,root,-)
-%doc README.md CHANGELOG.md
 %{_sbindir}/hpc-config-push
 %{_mandir}
 
