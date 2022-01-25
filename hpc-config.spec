@@ -89,7 +89,7 @@ on a central location or a set of servers.
 - enforce python36
 - add version to uncompress package name dir
 
-* Wed Jan 01 2022 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.0.3
+* Sat Jan 01 2022 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.0.3
 - New release 3.0.3
 - c-n-classifier: support explicit given role name
 - h-c-apply: variabilized rhel vs debian puppet paths
