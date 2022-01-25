@@ -9,7 +9,7 @@ Summary:	Suite of utilities to deploy HPC clusters generic configuration
 URL:		https://github.com/scibian/hpc-config
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: python36, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython, rubygem-hiera-eyaml
+BuildRequires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython, rubygem-hiera-eyaml
 
 %global debug_package %{nil}
 
