@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.1.0] - 2022-01-25
+
 ### Added
 - h-c-push: factorize openssl cmd generation
 - h-c-push: use password derivation when available
