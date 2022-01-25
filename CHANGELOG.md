@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - h-c-push: handle failed openssl command
 - h-c-push: remove double logging handler
+- h-c-apply: remove duplicate PUPPET_*_PATH vars
 
 ### Removed
 - h-c-push: remove useless comments
