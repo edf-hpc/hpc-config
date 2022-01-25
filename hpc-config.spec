@@ -40,11 +40,10 @@ install -m 755 -d %{buildroot}%{_sysconfdir}/%{name}
 install -m 755 init/systemd/%{name}-apply.service %{buildroot}%{__unit_dir}
 install -m 755 README.md CHANGELOG.md %{_builddir}
 install -m 755 -d %{buildroot}%{_mandir}
-install -m 755 doc/manpages/%{name}-*.1 %{buildroot}%{_mandir}
+install -D -m 755 -t %{buildroot}%{_mandir}/man1 doc/manpages/%{name}-*.1
 install -m 755 -d %{buildroot}%{__lib_dir}/%{name}/exec
 install -m 755 hpcconfig/cluster-node-classifier %{buildroot}%{__lib_dir}/%{name}/exec
 %{__python3} setup.py install --install-scripts=%{_sbindir} --root %{buildroot}
-
 
 %clean
 rm -rf %{buildroot}
@@ -75,7 +74,7 @@ It also provide a service file that applies it during the boot sequence.
 %{_sbindir}/hpc-config-apply
 %{__unit_dir}/%{name}-apply.service
 %{_sysconfdir}/%{name}
-%{_mandir}/%{name}-apply.1
+%{_mandir}/man1/%{name}-apply.1.gz
 %{__lib_dir}/hpc-config/exec/cluster-node-classifier
 
 
@@ -90,7 +89,7 @@ on a central location or a set of servers.
 %files push
 %defattr(-,root,root,-)
 %{_sbindir}/hpc-config-push
-%{_mandir}
+%{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
 
