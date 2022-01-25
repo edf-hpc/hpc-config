@@ -4,19 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-### [Unreleased]
+## [Unreleased]
 
-## [3.0.3]
+## [3.1.0] - 2022-01-25
 
 ### Added
-- c-n-classifier: support explicit given role name
-- c-n-classifier:backport features introduce in rhel8
+- h-c-push: factorize openssl cmd generation
+- h-c-push: use password derivation when available
+
 ### Fixed
-- h-c-apply: variabilized rhel vs debian puppet paths
+- h-c-push: handle failed openssl command
+- h-c-push: remove double logging handler
+- h-c-apply: remove duplicate PUPPET_*_PATH vars
+
+### Removed
+- h-c-push: remove useless comments
 
 ## [3.0.1]
 
-### Added
+### Fixed
+- new node classifier as an explicit given role name
+- backport features introduced in rhel8
+- variabilized redhat versus debian puppet paths
 - apply: Use puppet upstream packaging paths
 
 ## [2.0.6]
@@ -26,13 +35,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [2.0.5]
 
-### Added
-- h-c.spec: RPM spec file
 ### Fixed
 - h-c-apply: Fix connection error for scibian8
-
-### Changed
-- Update scripts/conf/manpage from latest debian release
 
 ## [2.0.4]
 
@@ -42,7 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ## [2.0.3]
 
 ### Fixed
-- Fix mismatching version and tag in 2.0.1
+- Fix mismatching version and tag in 2.0.1 
 
 ## [2.0.2]
 

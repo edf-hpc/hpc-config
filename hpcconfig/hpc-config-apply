@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2016-2022 EDF SA
+# Copyright (C) 2016-2021 EDF SA
 # Contact:
 #       CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
 #       1, Avenue du General de Gaulle
@@ -9,9 +9,9 @@
 #
 # Authors: CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
 #
-# This file is part of puppet-hpc.
+# This file is part of hpc-config.
 #
-# puppet-hpc is free software: you can redistribute in and/or
+# hpc-config is free software: you can redistribute in and/or
 # modify it under the terms of the GNU General Public License,
 # version 2, as published by the Free Software Foundation.
 #
@@ -21,7 +21,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public
-# License along with puppet-hpc. If not, see
+# License along with hpc-config. If not, see
 # <http://www.gnu.org/licenses/>.
 
 import locale
@@ -36,9 +36,9 @@ import logging
 import io
 import shutil
 import yaml
-import platform
-
 from sys import stdout
+
+from hpcconfig.system import os_distribution
 
 # Older urllib3 use the system error directly
 try:
@@ -46,12 +46,9 @@ try:
 except AttributeError:
     connection_error = OSError
 
-distribution = platform.dist()[0]
-distribution_version = platform.dist()[1]
-
 # Should be fixed on Fedora >= 23 and RHEL > 7
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=902094
-if distribution in {'redhat','centos'}:
+if os_distribution() in {'redhat','centos'}:
     LOCALE = 'en_US.UTF-8'
     PUPPET_CONF_PATH = '/etc/puppetlabs/puppet'
     PUPPET_BIN_PATH = '/opt/puppetlabs/puppet/bin/puppet'
