@@ -61,9 +61,6 @@ DEFAULT_TMPDIR = '/tmp'
 DEFAULT_ENVIRONMENT = 'production'
 DEFAULT_AREA = 'default'
 
-PUPPET_CONF_PATH = '/etc/puppetlabs/puppet'
-PUPPET_BIN_PATH = '/opt/puppetlabs/puppet/bin/puppet'
-
 PUPPET_ENV_ARCHIVE_NAME = 'puppet-config-environment.tar.xz'
 PUPPET_ENV_BASE_PATH = '%s/environments' % PUPPET_CONF_PATH
 PUPPET_ENV_BASE_OWNER = 0
