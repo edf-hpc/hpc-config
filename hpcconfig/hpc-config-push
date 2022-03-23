@@ -46,6 +46,8 @@ from multiprocessing import Pool
 from hpcconfig import environmentHandler
 from hpcconfig.system import os_distribution, os_major_version
 
+from cryptography import utils
+
 _area_passwords_cache = {}
 
 def conf_copy(src, dst, *, follow_symlinks=True):
@@ -283,6 +285,12 @@ def parse_args():
     return args
 
 def setup_warnings(enable=False):
+
+    try:
+        warnings.simplefilter("ignore", utils.CryptographyDeprecationWarning)
+    except AttributeError:
+        pass
+
     if not enable:
         warnings.filterwarnings("ignore", category=DeprecationWarning)
         warnings.filterwarnings("ignore", category=FutureWarning)
