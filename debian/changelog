@@ -1,3 +1,9 @@
+hpc-config (3.1.1-0sci9u1) scibian9; urgency=medium
+
+  * New upstream version 3.1.1
+
+ -- KWAME AMEDODJI <kwame-externe.amedodji@edf.fr>  Wed, 23 Mar 2022 21:53:14 +0100
+
 hpc-config (3.1.0-0sci9u1) scibian9; urgency=medium
 
   [ Rémi Palancher ]
