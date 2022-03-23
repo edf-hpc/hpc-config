@@ -2,23 +2,42 @@ Source: hpc-config
 Section: admin
 Priority: optional
 Maintainer: Scibian Project <packaging@scibian.org>
-Build-Depends: debhelper (>= 9), dh-systemd (>= 1.5)
+Build-Depends:
+ debhelper (>= 10),
+ dh-python,
+ python3-all,
+ python3-setuptools,
+ bash-completion
 Standards-Version: 3.9.6
 Homepage: https://github.com/edf-hpc/puppet-hpc
 Vcs-Git: https://github.com/scibian/hpc-config.git
 Vcs-Browser: https://github.com/scibian/hpc-config
 
-Package: hpc-config-apply
+Package: hpc-config-common
 Architecture: all
 Depends:
  ${misc:Depends},
- clustershell,
+ ${python3:Depends},
+ python3-paramiko,
+ python3-urllib3,
+ python3-boto,
+ python3-yaml
+Description: Common glue for Puppet HPC Configuration
+ Puppet HPC Configuration is a collection of puppet modules and hiera
+ configuration designed to install an HPC cluster.
+ .
+ This package provide the hpc-config library required by hpc-config-apply
+ and hpc-config-push tools.
+
+Package: hpc-config-apply
+Architecture: all
+Depends:
+ ${python3:Depends},
+ python3-clustershell,
  hiera-eyaml,
  lsb-release,
  puppet | puppet5,
- python3,
- python3-urllib3,
- python3-yaml
+ hpc-config-common (= ${source:Version})
 Description: Download and apply the Puppet HPC Configuration
  Puppet HPC Configuration is a collection of puppet modules and hiera
  configuration designed to install an HPC cluster.
@@ -30,10 +49,8 @@ Package: hpc-config-push
 Architecture: all
 Depends:
  ${misc:Depends},
- python3,
- python3-boto,
- python3-paramiko,
- python3-yaml
+ ${python3:Depends},
+ hpc-config-common (= ${source:Version})
 Description: Push the Puppet HPC Configuration
  Puppet HPC Configuration is a collection of puppet modules and hiera
  configuration designed to install an HPC cluster.

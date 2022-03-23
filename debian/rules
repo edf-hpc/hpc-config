@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
 %:
-	dh $@ --with systemd
+	dh $@ --with python3,bash-completion --buildsystem=pybuild
 
 override_dh_systemd_start:
 	dh_systemd_start --no-start
+
+# disable unit tests as they are not designed to run during package builds
+override_dh_auto_test:
