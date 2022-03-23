@@ -1,0 +1,2 @@
+usr/lib/*/dist-packages/hpcconfig/*.py
+usr/lib/*/dist-packages/*.egg-info
