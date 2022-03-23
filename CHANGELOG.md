@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- h-c-push: suppressed cryptography deprecated warn
+
 ## [3.1.0] - 2022-01-25
 
 ### Added
