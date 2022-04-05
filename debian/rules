@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 %:
-	dh $@ --with python3,bash-completion --buildsystem=pybuild
+	dh $@ --with python3 --buildsystem=pybuild
 
 override_dh_systemd_start:
 	# Avoid hpc-config-apply.service to [re]start on package installation and
