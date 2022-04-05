@@ -1,3 +1,11 @@
+hpc-config (3.1.1-0sci10u2) scibian10; urgency=medium
+
+  * Fix dependency on clustershell
+  * Bump d/compat to 10 for dh --with systemd
+  * Remove dh --with bash-completion
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Tue, 05 Apr 2022 16:13:50 +0200
+
 hpc-config (3.1.1-0sci10u1) scibian10; urgency=medium
 
   * New upstream version 3.1.1
