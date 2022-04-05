@@ -3,7 +3,11 @@
 	dh $@ --with python3,bash-completion --buildsystem=pybuild
 
 override_dh_systemd_start:
-	dh_systemd_start --no-start
+	# Avoid hpc-config-apply.service to [re]start on package installation and
+	# upgrade, as users do not expect Puppet configuration to run when this
+	# package is installed. The purpose of this service is only to make sure
+	# Puppet runs on system boot.
+	dh_systemd_start --no-start --no-restart-after-upgrade
 
 # disable unit tests as they are not designed to run during package builds
 override_dh_auto_test:
