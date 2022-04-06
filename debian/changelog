@@ -1,3 +1,9 @@
+hpc-config (3.1.1-0sci9u3) scibian9; urgency=medium
+
+  * add back python3-clustershell dep
+
+ -- KWAME AMEDODJI <kwame-externe.amedodji@edf.fr>  Wed, 06 Apr 2022 21:49:40 +0200
+
 hpc-config (3.1.1-0sci9u2) scibian9; urgency=medium
 
   * Remove dh --with bash-completion
