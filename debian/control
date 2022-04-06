@@ -33,6 +33,7 @@ Package: hpc-config-apply
 Architecture: all
 Depends:
  ${python3:Depends},
+ python3-clustershell,
  clustershell,
  hiera-eyaml,
  lsb-release,
