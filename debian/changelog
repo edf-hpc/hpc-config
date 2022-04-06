@@ -1,3 +1,9 @@
+hpc-config (3.1.1-0sci10u3) scibian10; urgency=medium
+
+  * add back python3-clustershell dep
+
+ -- KWAME AMEDODJI <kwame-externe.amedodji@edf.fr>  Wed, 06 Apr 2022 22:30:50 +0200
+
 hpc-config (3.1.1-0sci10u2) scibian10; urgency=medium
 
   * Fix dependency on clustershell
