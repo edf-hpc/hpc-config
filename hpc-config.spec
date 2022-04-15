@@ -3,7 +3,7 @@
 
 Name:		hpc-config
 Version:	3.1.1
-Release:	1%{?dist}.edf
+Release:	3%{?dist}.edf
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
 URL:		https://github.com/scibian/hpc-config
@@ -96,6 +96,11 @@ on a central location or a set of servers.
 %{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
+
+* Thu Apr 14 2022 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.1.1-3el8.edf
+- New upstream release 3.1.1-3
+- make obsolete previous < 3.0 version
+- add dep on python3-clustershell and clustershell
 
 * Wed Mar 23 2022 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.1.1-1el8.edf
 - New upstream release 3.1.1
