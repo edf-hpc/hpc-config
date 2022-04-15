@@ -62,7 +62,7 @@ and hpc-config-push tools.
 
 %package apply
 Summary: %{name}-apply script to deploy the configuration on a node
-Requires: %{name}-common
+Requires: %{name}-common python3-clustershell clustershell
 
 %description apply
 This package provide the hpc-config-apply script necessary to deploy the
