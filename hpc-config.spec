@@ -63,6 +63,8 @@ and hpc-config-push tools.
 %package apply
 Summary: %{name}-apply script to deploy the configuration on a node
 Requires: %{name}-common python3-clustershell clustershell
+Obsoletes: %{name}-apply <= 3.0
+Provides: %{name}-apply = %{version}
 
 %description apply
 This package provide the hpc-config-apply script necessary to deploy the
@@ -81,6 +83,8 @@ It also provide a service file that applies it during the boot sequence.
 %package push
 Summary: %{name}-push script to deploy the configuration on a node
 Requires: %{name}-common python3-GitPython, rubygem-hiera-eyaml
+Obsoletes: %{name}-push <= 3.0
+Provides: %{name}-push = %{version}
 
 %description push
 This package provide the hpc-config-push script to push the configuration
