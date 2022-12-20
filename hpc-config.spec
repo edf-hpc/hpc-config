@@ -37,6 +37,8 @@ organizations.
 install -m 755 -d %{buildroot}%{_sbindir}
 install -m 755 -d %{buildroot}%{__unit_dir}
 install -m 755 -d %{buildroot}%{_sysconfdir}/%{name}
+install -m 644 conf/push.conf %{buildroot}%{_sysconfdir}/%{name}
+install -m 644 conf/hpc-config.conf %{buildroot}%{_sysconfdir}
 install -m 755 init/systemd/%{name}-apply.service %{buildroot}%{__unit_dir}
 install -m 755 README.md CHANGELOG.md %{_builddir}
 install -m 755 -d %{buildroot}%{_mandir}
@@ -75,7 +77,7 @@ It also provide a service file that applies it during the boot sequence.
 %defattr(-,root,root,-)
 %{_sbindir}/hpc-config-apply
 %{__unit_dir}/%{name}-apply.service
-%{_sysconfdir}/%{name}
+%config(noreplace) %{_sysconfdir}/%{name}.conf
 %{_mandir}/man1/%{name}-apply.1.gz
 %{__lib_dir}/hpc-config/exec/cluster-node-classifier
 
@@ -93,6 +95,7 @@ on a central location or a set of servers.
 %files push
 %defattr(-,root,root,-)
 %{_sbindir}/hpc-config-push
+%config(noreplace) %{_sysconfdir}/%{name}/push.conf
 %{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
