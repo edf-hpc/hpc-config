@@ -39,8 +39,8 @@ install -m 755 -d %{buildroot}%{__unit_dir}
 install -m 755 -d %{buildroot}%{_sysconfdir}/%{name}
 install -m 644 conf/push.conf %{buildroot}%{_sysconfdir}/%{name}
 install -m 644 conf/hpc-config.conf %{buildroot}%{_sysconfdir}
-install -m 755 init/systemd/%{name}-apply.service %{buildroot}%{__unit_dir}
-install -m 755 README.md CHANGELOG.md %{_builddir}
+install -m 644 init/systemd/%{name}-apply.service %{buildroot}%{__unit_dir}
+install -m 644 README.md CHANGELOG.md %{_builddir}
 install -m 755 -d %{buildroot}%{_mandir}
 install -D -m 755 -t %{buildroot}%{_mandir}/man1 doc/manpages/%{name}-*.1
 install -m 755 -d %{buildroot}%{__lib_dir}/%{name}/exec
