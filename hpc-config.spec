@@ -3,7 +3,7 @@
 
 Name:		hpc-config
 Version:	3.1.1
-Release:	5%{?dist}.edf
+Release:	6%{?dist}.edf
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
 URL:		https://github.com/scibian/hpc-config
@@ -99,6 +99,9 @@ on a central location or a set of servers.
 %{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
+
+* Wed Jan 11 2023 Mhemed Mtimet <mhemed-externe.mtimet@edf.fr> - 3.1.1-6el8.edf
+- Fix issue with create  sys confdir
 
 * Fri Jan 06 2023 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.1.1-5el8.edf
 - Fix issue with unwanted sys confdir deletion
