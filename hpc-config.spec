@@ -77,11 +77,10 @@ It also provide a service file that applies it during the boot sequence.
 %defattr(-,root,root,-)
 %{_sbindir}/hpc-config-apply
 %{__unit_dir}/%{name}-apply.service
-%{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %{_mandir}/man1/%{name}-apply.1.gz
 %{__lib_dir}/hpc-config/exec/cluster-node-classifier
-
 
 %package push
 Summary: %{name}-push script to deploy the configuration on a node
