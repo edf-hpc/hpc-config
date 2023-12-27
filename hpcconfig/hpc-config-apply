@@ -48,7 +48,7 @@ except AttributeError:
 
 # Should be fixed on Fedora >= 23 and RHEL > 7
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=902094
-if os_distribution() in {'redhat','centos'}:
+if os_distribution() in {'redhat','centos','almalinux','rocky'}:
     LOCALE = 'en_US.UTF-8'
     PUPPET_CONF_PATH = '/etc/puppetlabs/puppet'
     PUPPET_BIN_PATH = '/opt/puppetlabs/puppet/bin/puppet'
