@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- h-c-apply: add redhat like distribution support
+
 ## [3.1.1] - 2022-03-23
 
 ### Fixed
