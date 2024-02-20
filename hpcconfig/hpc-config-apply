@@ -583,6 +583,7 @@ def clean(environment, keep=False):
 
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, LOCALE)
+    os.environ['LANG'] = 'C'
 
     params = get_parameters()
 
