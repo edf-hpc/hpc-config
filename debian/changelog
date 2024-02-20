@@ -1,3 +1,9 @@
+hpc-config (3.1.3-sci9u1) scibian9; urgency=medium
+
+  * New upstream version 3.1.3
+
+ -- KWAME AMEDODJI <kwame-externe.amedodji@edf.fr>  Tue, 20 Feb 2024 17:07:37 +0100
+
 hpc-config (3.1.1-0sci9u3) scibian9; urgency=medium
 
   * add back python3-clustershell dep
