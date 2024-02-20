@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.1.3] - 2023-02-20
+
 ### Fixed
 - h-c-apply: fix non-reentrant lang check issue
 
