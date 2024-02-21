@@ -100,10 +100,10 @@ on a central location or a set of servers.
 
 %changelog
 
-* 20 Feb 20 2024 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.1.3-1el8.edf
+* Tue Feb 20 2024 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.1.3-1el8.edf
 - New upstream release 3.1.3-1
 
-* 27 Dec 27 2023 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.1.2-1el8.edf
+* Wed Dec 27 2023 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.1.2-1el8.edf
 - New upstream release 3.1.2-1
 
 * Wed Jan 11 2023 Mhemed Mtimet <mhemed-externe.mtimet@edf.fr> - 3.1.1-6el8.edf
