@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 EDF SA
+# Copyright (C) 2022-2024 EDF SA
 # Contact:
 #       CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
 #       1, Avenue du General de Gaulle
@@ -25,9 +25,19 @@
 # <http://www.gnu.org/licenses/>.
 
 import platform
+try:
+    import distro
+except:
+    pass
 
 def os_distribution():
-    return platform.dist()[0]
+    try:
+        return platform.dist()[0]
+    except:
+        return distro.name().lower()
 
 def os_major_version():
-    return int(platform.dist()[1].split('.')[0])
+    try:
+        return int(platform.dist()[1].split('.')[0])
+    except:
+        return int(distro.version().split('.')[0])

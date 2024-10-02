@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [4.0.1] - 2024-10-02
+
+### Added
+- Add test for python >= 3.9
+
+### Fixed
+- h-c-push: fix warning of yaml.load for python >= 3.9
+
 ## [3.1.3] - 2023-02-20
 
 ### Fixed
