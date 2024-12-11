@@ -2,14 +2,14 @@
 %{!?__lib_dir:%global __lib_dir /usr/lib}
 
 Name:		hpc-config
-Version:	3.1.3
+Version:	4.0.1
 Release:	1%{?dist}.edf
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
 URL:		https://github.com/scibian/hpc-config
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython, rubygem-hiera-eyaml
+BuildRequires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython
 
 %global debug_package %{nil}
 
@@ -84,7 +84,7 @@ It also provide a service file that applies it during the boot sequence.
 
 %package push
 Summary: %{name}-push script to deploy the configuration on a node
-Requires: %{name}-common python3-GitPython, rubygem-hiera-eyaml
+Requires: %{name}-common python3-GitPython
 Obsoletes: %{name}-push <= 3.0
 Provides: %{name}-push = %{version}
 
@@ -99,6 +99,9 @@ on a central location or a set of servers.
 %{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
+
+* Tue Dec 10 2024 Saran Kaba <saran-externe.kaba@edf.fr> - 4.0.1-1el9.edf
+- New upstream release 4.0.1-1
 
 * Tue Feb 20 2024 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 3.1.3-1el8.edf
 - New upstream release 3.1.3-1
