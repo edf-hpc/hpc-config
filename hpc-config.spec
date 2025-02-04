@@ -9,7 +9,7 @@ Summary:	Suite of utilities to deploy HPC clusters generic configuration
 URL:		https://github.com/scibian/hpc-config
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython, python3-distro
+BuildRequires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython, python3-rpm-macros
 
 %global debug_package %{nil}
 
@@ -52,7 +52,7 @@ rm -rf %{buildroot}
 
 %package common
 Summary: %{name} library
-Requires: python3, python3-pyyaml, python3-urllib3, python3-paramiko
+Requires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-distro
 
 %description common
 This package provide the hpc-config library required by hpc-config-apply
