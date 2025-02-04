@@ -2,14 +2,14 @@
 %{!?__lib_dir:%global __lib_dir /usr/lib}
 
 Name:		hpc-config
-Version:	4.0.1
+Version:	4.0.2
 Release:	1%{?dist}.edf
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
 URL:		https://github.com/scibian/hpc-config
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython
+BuildRequires: python3, python3-pyyaml, python3-urllib3, python3-paramiko, python3-GitPython, python3-distro
 
 %global debug_package %{nil}
 
@@ -99,6 +99,9 @@ on a central location or a set of servers.
 %{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
+* Tue Feb 04 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.2-1.edf
+- h-c-push: fixed eyaml not found
+- system.py: clean the code to make it clearer
 
 * Tue Dec 10 2024 Saran Kaba <saran-externe.kaba@edf.fr> - 4.0.1-1el9.edf
 - New upstream release 4.0.1-1
