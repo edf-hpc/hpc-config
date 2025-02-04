@@ -25,19 +25,20 @@
 # <http://www.gnu.org/licenses/>.
 
 import platform
-try:
+
+# platform.dist was deprecated in python 3.7
+if int(platform.python_version_tuple()[1]) >= 7:
     import distro
-except:
-    pass
+    use_distro = True
+else:
+    use_distro = False
 
 def os_distribution():
-    try:
-        return platform.dist()[0]
-    except:
-        return distro.name().lower()
+    if use_distro:
+        return distro.distro_release_info()['id']
+    return platform.dist()[0]
 
 def os_major_version():
-    try:
-        return int(platform.dist()[1].split('.')[0])
-    except:
-        return int(distro.version().split('.')[0])
+    if use_distro:
+        return int(distro.version_parts()[0])
+    return int(platform.dist()[1].split('.')[0])
