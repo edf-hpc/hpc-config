@@ -2,7 +2,7 @@
 %{!?__lib_dir:%global __lib_dir /usr/lib}
 
 Name:		hpc-config
-Version:	4.0.2
+Version:	4.0.3
 Release:	1%{?dist}.edf
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
@@ -99,6 +99,9 @@ on a central location or a set of servers.
 %{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
+* Fri Feb 07 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.3-1.edf
+- Fixed classifier for el9
+
 * Tue Feb 04 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.2-1.edf
 - h-c-push: fixed eyaml not found
 - system.py: clean the code to make it clearer
