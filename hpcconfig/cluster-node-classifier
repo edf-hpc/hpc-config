@@ -38,7 +38,7 @@ def load_conf():
     conf = None
     try:
         with open(CONF, 'r') as fh_c:
-            conf = yaml.load(fh_c)
+            conf = yaml.safe_load(fh_c)
     except FileNotFoundError:
         print('unable to open file',
               CONF, file=sys.stderr)
