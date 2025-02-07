@@ -362,7 +362,7 @@ def get_area_decrypt_password(area):
                                   'areas', area + '.yaml')
     cmd = ['eyaml', 'decrypt', '--file', area_yaml_path]
     eyaml_run = subprocess.check_output(cmd, env=env)
-    area_yaml = yaml.load(eyaml_run, Loader=yaml.Loader)
+    area_yaml = yaml.safe_load(eyaml_run)
     _area_passwords_cache[area] = area_yaml['cluster_decrypt_password']
     return _area_passwords_cache[area]
 

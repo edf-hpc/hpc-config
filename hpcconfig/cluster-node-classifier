@@ -38,12 +38,11 @@ def load_conf():
     conf = None
     try:
         with open(CONF, 'r') as fh_c:
-            conf = yaml.load(fh_c)
+            conf = yaml.safe_load(fh_c)
     except FileNotFoundError:
         print('unable to open file',
               CONF, file=sys.stderr)
         sys.exit(1)
-        
 
     return conf
 
@@ -54,8 +53,7 @@ def get_noderole(prefix, nodename, roles=None):
     match = re.search(noderole_re_s, nodename)
     if match is None:
         if roles:
-            list = nodename.split(".")
-            node = list[0]
+            node = nodename.split(".")[0]
             for role, descriptors in roles.items():
                 for descriptor in descriptors:
                     if node.split('.')[0] in NodeSet(descriptor):
@@ -71,8 +69,7 @@ def get_noderole(prefix, nodename, roles=None):
 
 def get_nodearea(areas, role, nodename, roles=None):
 
-    list = nodename.split(".")
-    node = list[0]
+    node = nodename.split(".")[0]
     for area, descriptors in areas.items():
         for descriptor in descriptors:
             if node in NodeSet(descriptor):
@@ -82,10 +79,10 @@ def get_nodearea(areas, role, nodename, roles=None):
 
     if roles:
         return 'default'
-    else:
-        print('unable to find area for role',
-              role, file=sys.stderr)
-        sys.exit(1)
+
+    print('unable to find area for role',
+          role, file=sys.stderr)
+    sys.exit(1)
 
 
 def main():
@@ -116,7 +113,7 @@ def main():
     else:
         site['parameters']['area'] = 'default'
 
-    print(yaml.dump(site))
+    print(yaml.dump(site, default_flow_style=True))
 
 
 if __name__ == '__main__':
