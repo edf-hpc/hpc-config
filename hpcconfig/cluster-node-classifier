@@ -116,7 +116,7 @@ def main():
     else:
         site['parameters']['area'] = 'default'
 
-    print(yaml.dump(site))
+    print(yaml.dump(site, default_flow_style=True))
 
 
 if __name__ == '__main__':
