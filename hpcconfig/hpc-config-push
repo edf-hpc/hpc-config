@@ -429,7 +429,9 @@ def decrypt_extract_eyaml_keys():
             os.makedirs(os.path.join(conf.dir_tmp_keys, area))
             decrypt_file(other_area_keys_path_in, other_area_keys_path_out,main_area_encoding_key)
             other_area_keys_arch = tarfile.open(other_area_keys_path_out, mode='r')
-            other_area_keys_arch.extractall(path=os.path.join(conf.dir_tmp_keys, area))
+            other_area_keys_arch.extractall(
+                path=os.path.join(conf.dir_tmp_keys, area),
+                filter='tar')
 
 
 def reencrypt_area_eyaml_file(area):
