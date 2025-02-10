@@ -2,14 +2,14 @@
 %{!?__lib_dir:%global __lib_dir /usr/lib}
 
 Name:		hpc-config
-Version:	4.0.3
+Version:	4.0.4
 Release:	1%{?dist}.edf
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
 URL:		https://github.com/scibian/hpc-config
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: python3, python3-rpm-macros
+BuildRequires: python3, python3-setuptools, python3-rpm-macros
 
 %global debug_package %{nil}
 
@@ -99,6 +99,9 @@ on a central location or a set of servers.
 %{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
+* Mon Feb 10 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.4-1.edf
+- Added a new build requirement
+
 * Fri Feb 07 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.3-1.edf
 - Fixed classifier for el9
 
