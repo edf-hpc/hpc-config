@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="hpcconfig",
-    version="3.0.1",
+    version="4.1.0",
     author="ccnhpc",
     author_email="dsp-cspito-ccn-hpc@edf.fr",
     description="",
