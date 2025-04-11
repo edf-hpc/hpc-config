@@ -49,6 +49,7 @@ from hpcconfig.system import os_distribution, os_major_version
 from cryptography import utils
 
 _area_passwords_cache = {}
+env = None
 
 def conf_copy(src, dst, *, follow_symlinks=True):
     """Alternate copy function for shutil.copytree() in order to properly
@@ -360,8 +361,8 @@ def get_area_decrypt_password(area):
     area_yaml_path = os.path.join(conf.dir_hieradata_private, conf.cluster,
                                   'areas', area + '.yaml')
     cmd = ['eyaml', 'decrypt', '--file', area_yaml_path]
-    eyaml_run = subprocess.check_output(cmd)
-    area_yaml = yaml.load(eyaml_run)
+    eyaml_run = subprocess.check_output(cmd, env=env)
+    area_yaml = yaml.safe_load(eyaml_run)
     _area_passwords_cache[area] = area_yaml['cluster_decrypt_password']
     return _area_passwords_cache[area]
 
@@ -428,7 +429,9 @@ def decrypt_extract_eyaml_keys():
             os.makedirs(os.path.join(conf.dir_tmp_keys, area))
             decrypt_file(other_area_keys_path_in, other_area_keys_path_out,main_area_encoding_key)
             other_area_keys_arch = tarfile.open(other_area_keys_path_out, mode='r')
-            other_area_keys_arch.extractall(path=os.path.join(conf.dir_tmp_keys, area))
+            other_area_keys_arch.extractall(
+                path=os.path.join(conf.dir_tmp_keys, area),
+                filter='tar')
 
 
 def reencrypt_area_eyaml_file(area):
@@ -446,7 +449,7 @@ def reencrypt_area_eyaml_file(area):
     # decrypt the file using system keys with:
     #   eyaml decrypt --eyaml $FILE
     cmd = ['eyaml', 'decrypt', '--eyaml', area_eyaml_file_path]
-    eyaml_run = subprocess.check_output(cmd, universal_newlines=True)
+    eyaml_run = subprocess.check_output(cmd, universal_newlines=True, env=env)
     # rewrite the buffered output to the file
     with open(area_eyaml_file_path, 'w') as fh:
         fh.write(eyaml_run)
@@ -457,7 +460,7 @@ def reencrypt_area_eyaml_file(area):
            '--pkcs7-private-key', area_eyaml_private_key,
            '--pkcs7-public-key', area_eyaml_public_key,
            area_eyaml_file_path]
-    subprocess.check_call(cmd)
+    subprocess.check_call(cmd, env=env)
 
 
 def build_tarballs():
@@ -633,6 +636,7 @@ def cleanup_full():
         shutil.rmtree(conf.dir_tmp)
 
 def main():
+    global env
 
     #
     # init
@@ -644,6 +648,10 @@ def main():
     override_conf(args)
     conf.dump()
     envHandler = environmentHandler.environmentHandlerFactory(conf)
+    if os_distribution() != 'debian' and os_major_version() >= 9:
+        env = {
+            'PATH': os.environ.copy()['PATH'] + ':/opt/puppetlabs/puppet/bin',
+        }
 
     #
     # run
