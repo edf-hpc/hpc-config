@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020 EDF SA
+# Copyright (C) 2025 EDF SA
 # Contact:
 #       CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
 #       1, Avenue du General de Gaulle
@@ -465,15 +465,33 @@ def reencrypt_area_eyaml_file(area):
 
 def build_tarballs():
     """Build the tarballs for all areas."""
+    pool = Pool()
+    results = []
+
     for area in conf.areas:
-        build_tarball(area)
+        results.append(pool.apply_async(
+            build_tarball,
+            [area]
+        ))
+
+    pool.close()
+    pool.join()
+    success = 0
+    errors = 0
+    for result in results:
+        function_return = result.get()
+        if function_return:
+            success += 1
+        else:
+            errors += 1
+    logger.info("Build Tarballs: Built %d tarballs, %d errors", success, errors)
 
 
 def build_tarball(area):
 
     logger.info("creating archive %s", conf.archive_path(area))
     os.makedirs(os.path.dirname(conf.archive_path(area)))
-    tar = tarfile.open(name=conf.archive_path(area), mode='w:xz', dereference=True)
+    tar = tarfile.open(name=conf.archive_path(area), mode='w:xz', dereference=True, preset=1)
 
     # generic modules
     seen_modules = []
@@ -560,6 +578,8 @@ def build_tarball(area):
     tar.add(conf.conf_environment_gen, arcname=os.path.join(conf.environment, conf.conf_environment))
 
     tar.close()
+
+    return True
 
 def gen_env_conf():
 
