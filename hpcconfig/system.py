@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 EDF SA
+# Copyright (C) 2022-2024 EDF SA
 # Contact:
 #       CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
 #       1, Avenue du General de Gaulle
@@ -26,8 +26,19 @@
 
 import platform
 
+# platform.dist was deprecated in python 3.7
+if int(platform.python_version_tuple()[1]) >= 7:
+    import distro
+    use_distro = True
+else:
+    use_distro = False
+
 def os_distribution():
+    if use_distro:
+        return distro.distro_release_info()['id']
     return platform.dist()[0]
 
 def os_major_version():
+    if use_distro:
+        return int(distro.version_parts()[0])
     return int(platform.dist()[1].split('.')[0])
