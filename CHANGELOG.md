@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [4.1.1] - 2025-08-29
+
+## Added
+- h-c-push: compute checksums for private files
+
 ## [4.1.0] - 2025-11-04
 
 ## Added
