@@ -2,7 +2,7 @@
 %{!?__lib_dir:%global __lib_dir /usr/lib}
 
 Name:		hpc-config
-Version:	4.1.0
+Version:	4.1.1
 Release:	1%{?dist}.edf
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
@@ -99,16 +99,19 @@ on a central location or a set of servers.
 %{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
+* Fri Aug 29 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.1.1-1el9.edf
+- Checksum private files
+
 * Fri Apr 11 2025 Thomas HAMEL <thomas-t.hamel@edf.fr> - 4.1.0-1el9.edf
 - Optimize tarball generation
 
-* Mon Feb 10 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.4-1.edf
+* Mon Feb 10 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.4-1el9.edf
 - Added a new build requirement
 
-* Fri Feb 07 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.3-1.edf
+* Fri Feb 07 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.3-1el9.edf
 - Fixed classifier for el9
 
-* Tue Feb 04 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.2-1.edf
+* Tue Feb 04 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.0.2-1el9.edf
 - h-c-push: fixed eyaml not found
 - system.py: clean the code to make it clearer
 
