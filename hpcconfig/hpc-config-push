@@ -590,6 +590,8 @@ def checksum_file(file):
     with open(file + '.sha256sum', 'w') as ck_file:
         ck_file.write(checksum)
 
+    return True
+
 def checksum_files():
     """
     Generate checksum for file so apache can return them in headers
@@ -613,7 +615,7 @@ def checksum_files():
             success += 1
         else:
             errors += 1
-    logger.info("Checksum Files: checksummed %d files, %d errors", success, errors)
+    logger.info("Checksum Files: Checksummed %d files, %d errors", success, errors)
     pool.close()
     pool.join()
 
