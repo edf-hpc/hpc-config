@@ -40,6 +40,7 @@ import shutil
 import stat
 import warnings
 import yaml
+import hashlib
 from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import Pool
 
@@ -581,6 +582,41 @@ def build_tarball(area):
 
     return True
 
+def checksum_file(file):
+    """
+    """
+    logger.debug("checksum of file %s", file)
+    checksum = hashlib.sha256(open(file, 'rb').read()).hexdigest()
+    with open(file + '.sha256sum', 'w') as ck_file:
+        ck_file.write(checksum)
+
+def checksum_files():
+    """
+    Generate checksum for file so apache can return them in headers
+    """
+    pool = Pool()
+    results = []
+    walk = os.walk(conf.dir_files_private)
+    for (dirpath, dirnames, filenames) in walk:
+        for file in filenames:
+            results.append(pool.apply_async(
+                checksum_file,
+                [os.path.join(dirpath, file)]
+            ))
+    pool.close()
+    pool.join()
+    success = 0
+    errors = 0
+    for result in results:
+        function_return = result.get()
+        if function_return:
+            success += 1
+        else:
+            errors += 1
+    logger.info("Checksum Files: checksummed %d files, %d errors", success, errors)
+    pool.close()
+    pool.join()
+
 def gen_env_conf():
 
     with open(conf.conf_environment_gen, 'w+') as env_f:
@@ -684,6 +720,7 @@ def main():
         init_tmpd()
         decrypt_extract_eyaml_keys()
         copy_reenc_private_files()
+        checksum_files()
         gen_env_conf()
         build_tarballs()
         envHandler.upload()
