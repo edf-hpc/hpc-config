@@ -2,7 +2,7 @@
 %{!?__lib_dir:%global __lib_dir /usr/lib}
 
 Name:		hpc-config
-Version:	4.1.0
+Version:	4.1.1
 Release:	1%{?dist}.edf
 License:	GPLv2+
 Summary:	Suite of utilities to deploy HPC clusters generic configuration
@@ -99,6 +99,8 @@ on a central location or a set of servers.
 %{_mandir}/man1/%{name}-push.1.gz
 
 %changelog
+* Fri Aug 29 2025 Mathieu Chouquet-Stringer <mathieu-externe.chouquet-stringer@edf.fr> - 4.1.1-1el8.edf
+- Checksum private files
 
 * Tue Jul 22 2025 Kwame Amedodji <kwame-externe.amedodji@edf.fr> - 4.1.0-1el8.edf
 - Optimize tarball generation
